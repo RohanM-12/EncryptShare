@@ -2,23 +2,28 @@ import { Button, Input, Form, Image } from "antd";
 import Password from "antd/es/input/Password";
 import { IoMdLogIn } from "react-icons/io";
 import { FaUser } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import { useEffect, useState } from "react";
 const Login = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const [email, setEmail] = useState(searchParams.get("email") || "");
 
   const onFinish = async (values) => {
     try {
-      const result = await axios.get("/api/v1/user/login", {
-        params: values,
+      const result = await axios.post("/api/v1/user/login", {
+        ...values,
       });
 
       if (result?.data?.status === 200) {
         toast.success("Login Successful");
         navigate("/");
-      } else {
+      } else if (result?.data?.status == 403) {
         toast.error(result?.data?.message);
       }
     } catch (error) {
@@ -51,8 +56,14 @@ const Login = () => {
                       message: "Please provide valid email",
                     },
                   ]}
+                  initialValue={email}
                 >
-                  <Input className="p-2 s" placeholder=" Enter Email" />
+                  <Input
+                    className="p-2 s"
+                    placeholder=" Enter Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                 </Form.Item>
                 <Form.Item
                   name={"password"}
@@ -72,7 +83,6 @@ const Login = () => {
                     className="flex  bg-gray-900 text-white font-semibold w-28 hover:bg-gray-500 "
                     size="large"
                     onSubmit={onFinish}
-                    onClick={() => toast.error("dkjfhdj")}
                   >
                     <IoMdLogIn fontSize={22} className="mx-0.5" />
                     <span> LOGIN</span>

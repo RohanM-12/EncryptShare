@@ -5,16 +5,23 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaCirclePlus } from "react-icons/fa6";
 
 import axios from "axios";
+import { toast } from "react-toastify";
 const SignUp = () => {
   const navigate = useNavigate();
+
   const onFinish = async (values) => {
     try {
       const res = await axios.post("/api/v1/user/signup", values);
-      if (res?.data?.status == 200) {
-        navigate("/login");
+      console.log(res.data);
+      if (res?.data?.status == 201) {
+        navigate(`/login?email=${encodeURIComponent(res?.data?.user?.email)}`);
+        toast.success("User registered successfully, Please login to proceed");
+      } else if (res?.data?.status == 409) {
+        toast.error(res?.data?.message);
       }
     } catch (error) {
       console.log(error);
+      toast.error(error.message);
     }
   };
   return (
@@ -45,7 +52,7 @@ const SignUp = () => {
               </Form.Item>
 
               <Form.Item
-                name={"UseName"}
+                name={"userName"}
                 rules={[{ required: true, message: "Please provide input" }]}
               >
                 <Input className="p-2" placeholder=" Enter user name" />

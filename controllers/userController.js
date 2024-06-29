@@ -21,6 +21,7 @@ const loginUser = async (req, res) => {
       const userObject = doesExist.toObject();
       delete userObject.password;
       return res.status(200).json({
+        status: 200,
         message: "success",
         data: { ...userObject },
       });
@@ -38,7 +39,8 @@ const signupUser = async (req, res) => {
     const { email, password, userName } = req.body;
     const checkUser = await UserModel.findOne({ email });
     if (checkUser) {
-      return res.status(409).json({
+      return res.json({
+        status: 409,
         message: `User already registered with email ${email}`,
       });
     }
@@ -49,7 +51,8 @@ const signupUser = async (req, res) => {
       email: email,
     });
     return res.status(201).json({
-      status: "success",
+      status: 201,
+      user: { email },
       message: "new user registered",
     });
   } catch (error) {
