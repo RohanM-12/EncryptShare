@@ -1,0 +1,18 @@
+/* .custom-search .ant-btn-primary {
+  background-color: rgb(97, 97, 97);
+  border-color: rgb(135, 135, 135);
+}
+
+.custom-search .ant-btn-primary:hover,
+.custom-search .ant-btn-primary:focus {
+  background-color: rgb(134, 134, 134);
+  border-color: rgb(156, 156, 156);
+} */
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: rgb(63, 63, 63) !important; /* Set the color to gray */
+}
+
+/* Optional: Override the tab bar ink (underline) color */
+.ant-tabs-ink-bar {
+  background-color: rgb(63, 63, 63) !important;
+}

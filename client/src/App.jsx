@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./pages/login";
 import SignUp from "./pages/signup";
 import Homepage from "./pages/homepage";
+import Header from "./pages/header";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         transition:Bounce
       />
       <Router>
+        <Header />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
