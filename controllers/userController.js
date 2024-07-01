@@ -1,27 +1,32 @@
-const UserModel = require("../models/UserModel");
+const { prisma } = require("../utils/DBConnect");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS);
-
+const jwt = require("jsonwebtoken");
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const doesExist = await UserModel.findOne({ email });
-    console.log(doesExist);
-    if (!doesExist) {
+    const userObject = await prisma.user.findUnique({
+      where: { email },
+    });
+    console.log(userObject);
+    if (!userObject) {
       return res.status(403).json({
         message: "user not registered, please register to login",
       });
     }
 
     if (
-      doesExist.email === email &&
-      (await bcrypt.compare(password, doesExist.password))
+      userObject.email === email &&
+      (await bcrypt.compare(password, userObject.password))
     ) {
-      const userObject = doesExist.toObject();
+      const token = jwt.sign({ userObject }, process.env.JWT_SECRET, {
+        expiresIn: "1d",
+      });
       delete userObject.password;
       return res.status(200).json({
         status: 200,
+        token,
         message: "success",
         data: { ...userObject },
       });
@@ -37,7 +42,10 @@ const loginUser = async (req, res) => {
 const signupUser = async (req, res) => {
   try {
     const { email, password, userName } = req.body;
-    const checkUser = await UserModel.findOne({ email });
+    console.log(req.body);
+    const checkUser = await prisma.user.findUnique({
+      where: { email: email },
+    });
     if (checkUser) {
       return res.json({
         status: 409,
@@ -45,10 +53,8 @@ const signupUser = async (req, res) => {
       });
     }
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-    await UserModel.create({
-      name: userName,
-      password: hashedPassword,
-      email: email,
+    await prisma.user.create({
+      data: { name: userName, password: hashedPassword, email: email },
     });
     return res.status(201).json({
       status: 201,

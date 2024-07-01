@@ -1,6 +1,7 @@
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
+import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./pages/login";
 import SignUp from "./pages/signup";
@@ -11,8 +12,8 @@ function App() {
   return (
     <>
       <ToastContainer
-        position="top-center"
-        autoClose={5000}
+        position="top-left"
+        autoClose={4000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -20,7 +21,7 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme="dark"
         transition:Bounce
       />
       <Router>

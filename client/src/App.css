@@ -15,4 +15,5 @@
 /* Optional: Override the tab bar ink (underline) color */
 .ant-tabs-ink-bar {
   background-color: rgb(63, 63, 63) !important;
+  border-bottom: 2pt black solid;
 }

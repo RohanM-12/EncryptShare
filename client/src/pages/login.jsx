@@ -1,14 +1,17 @@
+import React from "react";
 import { Button, Input, Form, Image } from "antd";
 import Password from "antd/es/input/Password";
 import { IoMdLogIn } from "react-icons/io";
 import { FaUser } from "react-icons/fa";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useAuth } from "../context/authcontext";
+
 const Login = () => {
+  const [auth, setAuth] = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -16,15 +19,27 @@ const Login = () => {
 
   const onFinish = async (values) => {
     try {
-      const result = await axios.post("/api/v1/user/login", {
+      const { data } = await axios.post("/api/v1/user/login", {
         ...values,
       });
 
-      if (result?.data?.status === 200) {
+      if (data?.status === 200) {
+        setAuth({
+          user: { name: data?.data?.name, email: data?.data?.email },
+          token: data?.token,
+        });
+
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            user: { name: data?.data?.name, email: data?.data?.email },
+            token: data?.token,
+          })
+        );
         toast.success("Login Successful");
         navigate("/");
-      } else if (result?.data?.status == 403) {
-        toast.error(result?.data?.message);
+      } else if (data?.data?.status == 403) {
+        toast.error(data?.data?.message);
       }
     } catch (error) {
       console.log(error);
@@ -59,7 +74,7 @@ const Login = () => {
                   initialValue={email}
                 >
                   <Input
-                    className="p-2 s"
+                    className="p-2 "
                     placeholder=" Enter Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
