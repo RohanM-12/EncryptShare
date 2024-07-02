@@ -145,11 +145,7 @@ const UploadDocumentModal = ({ open, setOpen }) => {
             >
               {file ? null : uploadButton}
             </Upload>
-            {file && (
-              <p className="text-center" style={{ marginTop: 8 }}>
-                {file.name}
-              </p>
-            )}
+
             {previewImage && (
               <Image
                 width={200}
@@ -161,6 +157,14 @@ const UploadDocumentModal = ({ open, setOpen }) => {
               />
             )}
           </Form.Item>
+          {/* {file && (
+            <p
+              className="flex justify-center items-end text-center"
+              style={{ margin: 8 }}
+            >
+              {file.name}
+            </p>
+          )} */}
           <Form.Item name={"fileName"} className="text-center">
             <Input
               placeholder="Rename file? (leave empty if no)"

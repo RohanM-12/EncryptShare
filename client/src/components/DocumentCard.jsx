@@ -4,7 +4,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { FaShareNodes } from "react-icons/fa6";
 const DocumentCard = () => {
   return (
-    <div className="h-auto w-fit border-2 border-gray-300 rounded-lg p-2">
+    <div className="h-auto w-fit border-2 border-gray-300 rounded-lg p-2 mx-5">
       <div className="w-64">
         <img src={"/src/assets/img/documentPreview.gif"} alt="preview" />
       </div>
