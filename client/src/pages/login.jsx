@@ -25,14 +25,22 @@ const Login = () => {
 
       if (data?.status === 200) {
         setAuth({
-          user: { name: data?.data?.name, email: data?.data?.email },
+          user: {
+            id: data?.data?.id,
+            name: data?.data?.name,
+            email: data?.data?.email,
+          },
           token: data?.token,
         });
 
         localStorage.setItem(
           "user",
           JSON.stringify({
-            user: { name: data?.data?.name, email: data?.data?.email },
+            user: {
+              id: data?.data?.id,
+              name: data?.data?.name,
+              email: data?.data?.email,
+            },
             token: data?.token,
           })
         );

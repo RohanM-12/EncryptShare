@@ -26,4 +26,5 @@ model File {
   name String
   size String
   ownerId Int
+  initializationVector String @default("none")
 }

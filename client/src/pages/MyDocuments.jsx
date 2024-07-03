@@ -1,33 +1,51 @@
-import React, { Children, useState } from "react";
-
+import React, { Children, useEffect, useState } from "react";
 import DocumentCard from "../components/DocumentCard";
 import BtnUpload from "../components/BtnUpload";
 import UploadDocumentModal from "../components/uploadDocumentModal";
+import axios from "axios";
+import { useAuth } from "../context/authcontext";
 const MyDocuments = () => {
+  const [auth] = useAuth();
+  const [documents, setDocuments] = useState([]);
   const [open, setOpen] = useState(false);
   const handleUploadClick = () => {
     setOpen(true);
   };
+  const fetchData = async () => {
+    try {
+      if (auth?.user?.id) {
+        const { data } = await axios.get("/api/v1/document/getDocuments", {
+          params: { userId: auth?.user?.id },
+        });
+        console.log(data.data);
+        setDocuments(data?.data);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, [auth.user]);
   return (
     <>
-      <div className="grid grid-cols-4 gap-4 ">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7].map((item, i) => {
-          return <DocumentCard key={item} />;
-        })}
-        {/* {[1, 2, 3].map((document, i) => {
-          <>
-            <DocumentCard key={i} />
-          </>;
-        })} */}
+      <div className="grid grid-cols-4 gap-4 px-20 py-5">
+        {documents?.length > 0 &&
+          documents?.map((item, i) => {
+            return (
+              <div key={item.id} className="drop-shadow-md">
+                <DocumentCard docData={item} fetchData={fetchData} />
+              </div>
+            );
+          })}
       </div>
 
-      {/* <div
-        onClick={() => setOpen(true)}
-        className="absolute bottom-10 right-20"
-      > */}
       <BtnUpload onClick={handleUploadClick} />
-      <UploadDocumentModal open={open} setOpen={setOpen} />
-      {/* </div> */}
+      <UploadDocumentModal
+        open={open}
+        setOpen={setOpen}
+        fetchData={fetchData}
+      />
     </>
   );
 };

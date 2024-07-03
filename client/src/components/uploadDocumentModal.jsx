@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Button, Form, Image, Input, Modal, Upload } from "antd";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
@@ -6,7 +5,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/authcontext";
 
-const UploadDocumentModal = ({ open, setOpen }) => {
+const UploadDocumentModal = ({ open, setOpen, fetchData }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
   const [auth] = useAuth();
@@ -27,9 +26,15 @@ const UploadDocumentModal = ({ open, setOpen }) => {
 
   const handleOk = async () => {
     try {
+      const formData = new FormData();
       const values = await form.validateFields();
-
+      formData.append("FileName", values.fileName);
+      formData.append("file", file);
+      formData.append("ownerId", auth?.user?.id);
       setConfirmLoading(true);
+      const data = await axios.post("/api/v1/document/upload", formData, {
+        headers: { "content-Type": "multipart/form-data" },
+      });
       try {
         setTimeout(() => {
           setOpen(false);
@@ -38,8 +43,12 @@ const UploadDocumentModal = ({ open, setOpen }) => {
           setFile(null);
           setFileName("");
           setFileExtension("");
-          toast.success("Document uploaded successfully");
         }, 1000);
+
+        if (data?.status == 201) {
+          fetchData();
+          toast.success("Document uploaded successfully");
+        }
       } catch (error) {
         console.log(error);
       }
@@ -51,6 +60,7 @@ const UploadDocumentModal = ({ open, setOpen }) => {
   const handleCancel = () => {
     setOpen(false);
     form.resetFields();
+    setConfirmLoading(false);
     setFile(null);
     setFileName("");
     setFileExtension("");
@@ -71,7 +81,7 @@ const UploadDocumentModal = ({ open, setOpen }) => {
     let newFile = info.file;
     if (!newFile.type.startsWith("image/")) {
       if (newFile.type === "text/plain") {
-        newFile.thumbUrl = "/src/assets/img/text.png";
+        newFile.thumbUrl = "/src/assets/img/txt.png";
       } else if (newFile.type === "application/pdf") {
         newFile.thumbUrl = "/src/assets/img/pdf.png";
       } else if (
@@ -79,13 +89,18 @@ const UploadDocumentModal = ({ open, setOpen }) => {
         newFile.type ===
           "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
       ) {
-        newFile.thumbUrl = "/src/assets/img/word.png";
+        newFile.thumbUrl = "/src/assets/img/docx.png";
       } else if (
         newFile.type === "application/vnd.ms-powerpoint" ||
         newFile.type ===
           "application/vnd.openxmlformats-officedocument.presentationml.presentation"
       ) {
-        newFile.thumbUrl = "/src/assets/img/ppt.png";
+        newFile.thumbUrl = "/src/assets/img/pptx.png";
+      } else if (
+        newFile.type ===
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      ) {
+        newFile.thumbUrl = "/src/assets/img/xlsx.png";
       } else {
         newFile.thumbUrl = "/src/assets/img/default.png";
       }
@@ -101,7 +116,6 @@ const UploadDocumentModal = ({ open, setOpen }) => {
       setFileName(fullName);
       setFileExtension("");
     }
-
     console.log(newFile);
   };
 
@@ -132,7 +146,7 @@ const UploadDocumentModal = ({ open, setOpen }) => {
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
       >
-        <Form layout="vertical" form={form}>
+        <Form layout="vertical" encType="multipart/form-data" form={form}>
           <Form.Item name={"File"} className="flex justify-center">
             <Upload
               accept="*/*"
@@ -154,6 +168,7 @@ const UploadDocumentModal = ({ open, setOpen }) => {
                   visible: previewOpen,
                   onVisibleChange: (visible) => setPreviewOpen(visible),
                 }}
+                // preview={false}
               />
             )}
           </Form.Item>
@@ -167,7 +182,7 @@ const UploadDocumentModal = ({ open, setOpen }) => {
           )} */}
           <Form.Item name={"fileName"} className="text-center">
             <Input
-              placeholder="Rename file? (leave empty if no)"
+              placeholder="Rename file"
               name="fileName"
               className="text-center w-2/3"
               onChange={(e) => setFileName(e.target.value)}

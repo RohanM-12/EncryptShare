@@ -3,7 +3,6 @@ const { encrypt, decrypt } = require("../utils/AESCipher");
 const fs = require("fs");
 const { prisma } = require("../utils/DBConnect");
 const File = require("../models/fileModel");
-const { default: mongoose } = require("mongoose");
 const uploadDocument = async (req, res) => {
   try {
     console.log("file", req.file);
@@ -29,7 +28,8 @@ const uploadDocument = async (req, res) => {
         mongoId: mongoData._id.toString(),
         name: req.file.originalname,
         size: req.file.size.toString(),
-        ownerId: 1,
+        ownerId: parseInt(req.body.ownerId),
+        initializationVector: iv.toString("hex"),
       },
     });
     console.log("Decrypted Filename:", decryptedFilename);
@@ -47,4 +47,72 @@ const uploadDocument = async (req, res) => {
   }
 };
 
-module.exports = { uploadDocument };
+const getDocuments = async (req, res) => {
+  try {
+    console.log(req.query);
+
+    const allDocs = await prisma.file.findMany({
+      where: {
+        ownerId: parseInt(req.query.userId),
+      },
+    });
+
+    //delete allDocs.initializationVector;
+
+    return res.status(200).json({
+      message: "success",
+      data: allDocs,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: error,
+      message: error.message,
+    });
+  }
+};
+
+const deleteDocument = async (req, res) => {
+  try {
+    const { mongoId, id } = req.query;
+    const deleteMongoData = await File.deleteOne({ _id: mongoId });
+    if (!deleteMongoData) {
+      return res.status(400).json({
+        message: "error deleting encrpyted data",
+      });
+    }
+    const deleteMetaData = await prisma.file.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
+    if (!deleteMetaData) {
+      return res.status(400).json({
+        message: "error deleting metadata",
+      });
+    }
+    return res.status(200).json({
+      message: "success",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: error,
+      message: error.message,
+    });
+  }
+};
+
+const downloadDocument = async (req, res) => {
+  try {
+  } catch (error) {
+    return res.status(500).json({
+      error: error,
+      message: error.message,
+    });
+  }
+};
+module.exports = {
+  uploadDocument,
+  getDocuments,
+  deleteDocument,
+  downloadDocument,
+};

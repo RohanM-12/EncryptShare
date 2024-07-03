@@ -1,5 +1,10 @@
 const express = require("express");
-const { uploadDocument } = require("../controllers/documentController");
+const {
+  uploadDocument,
+  getDocuments,
+  deleteDocument,
+  downloadDocument,
+} = require("../controllers/documentController");
 const multer = require("multer");
 const docRoutes = express.Router();
 
@@ -12,8 +17,12 @@ const docRoutes = express.Router();
 //   },
 // });
 // const upload = multer({ storage });
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-docRoutes.post("/upload", upload.single("testImg"), uploadDocument);
+docRoutes.post("/upload", upload.single("file"), uploadDocument);
+docRoutes.get("/getDocuments", getDocuments);
+docRoutes.get("/downloadDocument", downloadDocument);
+docRoutes.delete("/deleteDocument", deleteDocument);
 
 module.exports = { docRoutes };
