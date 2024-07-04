@@ -1,8 +1,7 @@
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./App.css";
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/login";
 import SignUp from "./pages/signup";
 import Homepage from "./pages/homepage";
@@ -23,17 +22,14 @@ function App() {
         draggable
         pauseOnHover
         theme="dark"
-        transition:Bounce
       />
       <Router>
         <Header />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route
-            path="/"
-            element={<ProtectedRoute Component={<Homepage />} />}
-          />
+
+          <Route path="/" element={<Homepage />} />
         </Routes>
       </Router>
     </>

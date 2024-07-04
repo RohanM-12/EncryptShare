@@ -21,8 +21,8 @@ const docRoutes = express.Router();
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-docRoutes.post("/upload", validateUser, upload.single("file"), uploadDocument);
-docRoutes.get("/getDocuments", validateUser, getDocuments);
+docRoutes.post("/upload", upload.single("file"), uploadDocument);
+docRoutes.get("/getDocuments", getDocuments);
 docRoutes.get("/download", downloadDocument);
 docRoutes.delete("/deleteDocument", deleteDocument);
 

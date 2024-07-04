@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/authcontext";
+import { filesize } from "filesize";
 const UploadDocumentModal = ({ open, setOpen, fetchData }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
@@ -177,7 +178,7 @@ const UploadDocumentModal = ({ open, setOpen, fetchData }) => {
               className="flex justify-center items-end text-center"
               style={{ margin: 8 }}
             >
-              {file.name}
+              {file.name} - {filesize(file.size)}
             </p>
           )}
           <Form.Item name={"fileName"} className="text-center">

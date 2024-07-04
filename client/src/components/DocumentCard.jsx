@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/authcontext";
+import { filesize } from "filesize";
 import ShareDrawer from "./ShareDrawer";
 import SpinnerCircle from "./SpinnerCircle";
 const DocumentCard = ({ docData, fetchData }) => {
@@ -69,9 +70,15 @@ const DocumentCard = ({ docData, fetchData }) => {
   };
 
   return (
-    <div className="h-auto w-fit border-2 border-gray-300 rounded-lg p-1 drop-shadow-2xl">
+    <div className="h-auto w-fit border-2 border-gray-300 rounded-lg p-1 drop-shadow-2xl hover:scale-105 ease-out duration-300">
       <div className="w-64 flex justify-center items-center">
-        <Image preview={false} height={120} src={getImageSrc()} alt="img" />
+        <Image
+          preview={false}
+          height={120}
+          src={getImageSrc()}
+          alt="img"
+          className="hover:scale-125 ease-out duration-300 "
+        />
       </div>
       <div className="my-2 text-center text-gray-600">
         {docData?.name?.split(".")[0].length > 18
@@ -79,6 +86,9 @@ const DocumentCard = ({ docData, fetchData }) => {
             "..." +
             docData?.name?.split(".")[1]
           : docData?.name}
+      </div>
+      <div className="text-center text-sm text-gray-500 font-normal">
+        {filesize(docData.size)}
       </div>
       <div className=" border-b-2 my-1 border-gray-300"></div>
       <div className="grid grid-cols-3 justify-center items-center  ">
