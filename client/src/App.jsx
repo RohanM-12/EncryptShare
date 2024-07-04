@@ -7,6 +7,7 @@ import Login from "./pages/login";
 import SignUp from "./pages/signup";
 import Homepage from "./pages/homepage";
 import Header from "./pages/header";
+import ProtectedRoute from "./components/ProtectedRoutes";
 
 function App() {
   return (
@@ -29,7 +30,10 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/" element={<Homepage />} />
+          <Route
+            path="/"
+            element={<ProtectedRoute Component={<Homepage />} />}
+          />
         </Routes>
       </Router>
     </>

@@ -6,8 +6,9 @@ import { CloudUploadOutlined } from "@ant-design/icons";
 const BtnUpload = ({ onClick }) => {
   return (
     <FloatButton
-      icon={<CloudUploadOutlined className=" rounded-full p-0.5" />}
-      type="primary"
+      className="hover:drop-shadow-2xl"
+      icon={<CloudUploadOutlined className=" text-white rounded-2xl p-0.5" />}
+      type="secondary"
       style={{
         width: 64,
         height: 64,

@@ -1,3 +1,4 @@
+import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext(null);
@@ -15,6 +16,7 @@ const AuthProvider = ({ children }) => {
       setAuth({ user: temp.user, token: temp.token });
     }
   }, []);
+  axios.defaults.headers.common["Authorization"] = auth?.token;
   return (
     <AuthContext.Provider value={[auth, setAuth]}>
       {children}
