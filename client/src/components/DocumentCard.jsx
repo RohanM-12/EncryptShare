@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable react/prop-types */
+import React, { useState } from "react";
 import { FaCloudDownloadAlt } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { FaShareNodes } from "react-icons/fa6";
@@ -6,11 +7,17 @@ import { Image, Popconfirm } from "antd";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/authcontext";
+import ShareDrawer from "./ShareDrawer";
+import SpinnerCircle from "./SpinnerCircle";
 const DocumentCard = ({ docData, fetchData }) => {
   const docTypes = ["txt", "pdf", "pptx", "docx", "xlsx"];
+  const [auth] = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const getImageSrc = () => {
     const extension = docData?.name?.split(".")[1];
-    console.log(extension);
+
     const imgPath = docTypes.find((item) => item === extension)
       ? `/src/assets/img/${extension}.png`
       : `/src/assets/img/default.png`;
@@ -22,7 +29,7 @@ const DocumentCard = ({ docData, fetchData }) => {
       const data = await axios.delete("/api/v1/document/deleteDocument", {
         params: { id: docData?.id, mongoId: docData?.mongoId },
       });
-      console.log(data);
+
       if (data?.status == 200) {
         toast.success("File deleted successfully");
       }
@@ -31,6 +38,36 @@ const DocumentCard = ({ docData, fetchData }) => {
       console.log(error.message);
     }
   };
+
+  const downloadDocument = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/api/v1/document/download", {
+        params: {
+          mongoId: docData.mongoId,
+          id: docData.id,
+          userId: auth?.user?.id,
+        },
+        responseType: "blob",
+      });
+      let filename = docData?.name;
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Download error:", error);
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="h-auto w-fit border-2 border-gray-300 rounded-lg p-1 drop-shadow-2xl">
       <div className="w-64 flex justify-center items-center">
@@ -45,9 +82,16 @@ const DocumentCard = ({ docData, fetchData }) => {
       </div>
       <div className=" border-b-2 my-1 border-gray-300"></div>
       <div className="grid grid-cols-3 justify-center items-center  ">
-        <span className="flex justify-center hover:text-green-500 ">
-          <FaCloudDownloadAlt size={30} />
-        </span>
+        <Link
+          onClick={downloadDocument}
+          className="flex justify-center hover:text-green-500 "
+        >
+          {loading ? (
+            <SpinnerCircle tip={"Downloading"} color={"#7ae582"} />
+          ) : (
+            <FaCloudDownloadAlt size={30} />
+          )}
+        </Link>
         <Popconfirm
           title="Delete document"
           description="Are you sure to delete the file?"
@@ -59,10 +103,14 @@ const DocumentCard = ({ docData, fetchData }) => {
             <MdDeleteForever size={30} />
           </Link>
         </Popconfirm>
-        <span className="flex justify-center hover:text-blue-500">
+        <Link
+          onClick={() => setIsOpen(true)}
+          className="flex justify-center hover:text-blue-500"
+        >
           <FaShareNodes size={25} />
-        </span>
+        </Link>
       </div>
+      <ShareDrawer open={isOpen} setIsOpen={setIsOpen} />
     </div>
   );
 };

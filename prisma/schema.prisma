@@ -18,6 +18,16 @@ model User {
   name String 
   email String @unique 
   password String
+  userKeys UserKeys?
+}
+
+model UserKeys {
+  id Int @id @default(autoincrement())
+  userId Int @unique
+  publicKey String
+  privateKey String
+  iv String @default("")
+  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
 }
 
 model File {
@@ -27,4 +37,14 @@ model File {
   size String
   ownerId Int
   initializationVector String @default("none")
+  accessList AccessList[]
 }
+
+model AccessList {
+  id Int @id @default(autoincrement())
+  fileId Int
+  userId Int
+  encryptedKey String
+  file File @relation(fields: [fileId],references: [id],onDelete: Cascade)
+}
+

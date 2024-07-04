@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/authcontext";
-
 const UploadDocumentModal = ({ open, setOpen, fetchData }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
@@ -28,6 +27,7 @@ const UploadDocumentModal = ({ open, setOpen, fetchData }) => {
     try {
       const formData = new FormData();
       const values = await form.validateFields();
+      if (!file) return toast.warn("Please select file to upload");
       formData.append("FileName", values.fileName);
       formData.append("file", file);
       formData.append("ownerId", auth?.user?.id);
@@ -43,7 +43,7 @@ const UploadDocumentModal = ({ open, setOpen, fetchData }) => {
           setFile(null);
           setFileName("");
           setFileExtension("");
-        }, 1000);
+        }, 500);
 
         if (data?.status == 201) {
           fetchData();
@@ -116,7 +116,7 @@ const UploadDocumentModal = ({ open, setOpen, fetchData }) => {
       setFileName(fullName);
       setFileExtension("");
     }
-    console.log(newFile);
+    // console.log(newFile);
   };
 
   const handleRemove = () => {
@@ -172,14 +172,14 @@ const UploadDocumentModal = ({ open, setOpen, fetchData }) => {
               />
             )}
           </Form.Item>
-          {/* {file && (
+          {file && (
             <p
               className="flex justify-center items-end text-center"
               style={{ margin: 8 }}
             >
               {file.name}
             </p>
-          )} */}
+          )}
           <Form.Item name={"fileName"} className="text-center">
             <Input
               placeholder="Rename file"

@@ -22,7 +22,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 docRoutes.post("/upload", upload.single("file"), uploadDocument);
 docRoutes.get("/getDocuments", getDocuments);
-docRoutes.get("/downloadDocument", downloadDocument);
+docRoutes.get("/download", downloadDocument);
 docRoutes.delete("/deleteDocument", deleteDocument);
 
 module.exports = { docRoutes };

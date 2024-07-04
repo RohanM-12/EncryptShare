@@ -46,8 +46,8 @@ const Login = () => {
         );
         toast.success("Login Successful");
         navigate("/");
-      } else if (data?.data?.status == 403) {
-        toast.error(data?.data?.message);
+      } else if (data?.status == 403) {
+        toast.error(data?.message);
       }
     } catch (error) {
       console.log(error);

@@ -33,7 +33,7 @@ const Header = () => {
           <div className=" grid grid-cols-3 w-full">
             <div className=" flex justify-end col-span-2 ">
               <Input
-                className=" w-1/2 drop-shadow-xl text-center border-2 border-gray-400"
+                className=" w-1/2 h-12 drop-shadow-xl text-center border-2 border-gray-400"
                 size="large"
                 placeholder="🔍 Search Document"
               />
@@ -45,13 +45,19 @@ const Header = () => {
                   items,
                 }}
               >
-                <a onClick={(e) => e.preventDefault()}>
+                <a
+                  className="grid grid-cols-1 justify-center "
+                  onClick={(e) => e.preventDefault()}
+                >
                   <Space>
                     <Avatar
-                      size={40}
-                      className="bg-gray-800 drop-shadow-2xl shadow-xl mr-5"
+                      size={50}
+                      className="bg-gray-800 drop-shadow-2xl shadow-xl mr-5 "
                     >
-                      <span className="font-semibold"> {"U"} </span>
+                      <span className="font-semibold">
+                        {auth?.user.name.substr(0, 1).toUpperCase()}{" "}
+                      </span>
+                      {/* <div className="">{auth?.user?.name?.toUpperCase()}</div> */}
                     </Avatar>
                   </Space>
                 </a>

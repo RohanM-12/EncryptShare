@@ -1,8 +1,10 @@
 const { prisma } = require("../utils/DBConnect");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 require("dotenv").config();
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS);
 const jwt = require("jsonwebtoken");
+const { generateKeyPair, encryptPrivateKey } = require("../utils/AESCipher");
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -11,7 +13,8 @@ const loginUser = async (req, res) => {
     });
     console.log(userObject);
     if (!userObject) {
-      return res.status(403).json({
+      return res.json({
+        status: 403,
         message: "user not registered, please register to login",
       });
     }
@@ -31,6 +34,10 @@ const loginUser = async (req, res) => {
         data: { ...userObject },
       });
     }
+    return res.json({
+      status: 403,
+      message: "Email or password is incorrect",
+    });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({
@@ -38,7 +45,6 @@ const loginUser = async (req, res) => {
     });
   }
 };
-
 const signupUser = async (req, res) => {
   try {
     const { email, password, userName } = req.body;
@@ -52,10 +58,32 @@ const signupUser = async (req, res) => {
         message: `User already registered with email ${email}`,
       });
     }
+
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-    await prisma.user.create({
+
+    const userData = await prisma.user.create({
       data: { name: userName, password: hashedPassword, email: email },
     });
+
+    if (userData) {
+      const { publicKey, privateKey } = await generateKeyPair();
+      console.log(privateKey, publicKey);
+      const iv = crypto.randomBytes(16);
+      const encryptedPrivateKey = encryptPrivateKey(
+        privateKey,
+        process.env.MASTER_KEY,
+        iv
+      );
+
+      const res = await prisma.UserKeys.create({
+        data: {
+          userId: userData.id,
+          publicKey: publicKey,
+          privateKey: encryptedPrivateKey,
+          iv: iv.toString("hex"),
+        },
+      });
+    }
     return res.status(201).json({
       status: 201,
       user: { email },
@@ -68,5 +96,4 @@ const signupUser = async (req, res) => {
     });
   }
 };
-
 module.exports = { loginUser, signupUser };

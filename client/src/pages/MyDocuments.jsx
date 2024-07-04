@@ -17,7 +17,7 @@ const MyDocuments = () => {
         const { data } = await axios.get("/api/v1/document/getDocuments", {
           params: { userId: auth?.user?.id },
         });
-        console.log(data.data);
+        //console.log(data.data);
         setDocuments(data?.data);
       }
     } catch (error) {
