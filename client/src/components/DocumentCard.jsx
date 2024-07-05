@@ -77,7 +77,7 @@ const DocumentCard = ({ docData, fetchData }) => {
           height={100}
           src={getImageSrc()}
           alt="img"
-          className="hover:scale-125 ease-out duration-300 "
+          className="hover:scale-125 ease-out duration-200 "
         />
       </div>
       <div className="my-2 text-center text-gray-600">

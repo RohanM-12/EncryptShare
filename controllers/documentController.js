@@ -208,6 +208,26 @@ const downloadDocument = async (req, res) => {
     });
   }
 };
+
+const shareDocument = async (req, res) => {
+  try {
+    const { userData, fileId, ownerId } = req.body;
+    // ----------------- PLAN for further implementation of file share ---------------
+    //grab private key for owner of the file from userkeys
+    // decrypt the private key of owner using master secret
+    // grab the encrpyted aes key for the file from access list associated with the owner
+    // decrpyt the aes key using owners private key
+    // grab the shared users private key
+    // decrpyt the shared uesrs private key usign master key
+    // now encrypt the aes key using the above decrpyted private key
+    // now save the aes key and userID in accessList
+  } catch (error) {
+    return res.status(500).json({
+      error: error,
+      message: error.message,
+    });
+  }
+};
 module.exports = {
   uploadDocument,
   getDocuments,

@@ -29,7 +29,7 @@ const UploadDocumentModal = ({ open, setOpen, fetchData }) => {
       const formData = new FormData();
       const values = await form.validateFields();
       if (!file) return toast.warn("Please select file to upload");
-      formData.append("FileName", values.fileName);
+      formData.append("FileName", fileName + fileExtension);
       formData.append("file", file);
       formData.append("ownerId", auth?.user?.id);
       setConfirmLoading(true);
