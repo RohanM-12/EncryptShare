@@ -29,7 +29,7 @@ const MyDocuments = () => {
   }, [auth.user]);
   return (
     <>
-      <div className="grid grid-cols-4 gap-4 px-20 py-5">
+      <div className="grid grid-cols-1 gap-5 px-10 py-5 lg:grid-cols-4 lg:px-20 md:grid-cols-3 ">
         {documents?.length > 0 &&
           documents?.map((item, i) => {
             return (

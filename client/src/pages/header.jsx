@@ -3,6 +3,7 @@ import React, { Children } from "react";
 import { TbLogout } from "react-icons/tb";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authcontext";
+import { CaretDownOutlined } from "@ant-design/icons";
 const Header = () => {
   const navigate = useNavigate();
   const [auth, setAuth] = useAuth();
@@ -33,7 +34,7 @@ const Header = () => {
           <div className=" grid grid-cols-3 w-full">
             <div className=" flex justify-end col-span-2 ">
               <Input
-                className=" w-1/2 h-12 drop-shadow-xl text-center border-2 border-gray-400"
+                className="w-3/2 lg:w-1/2 md:2/3 h-12 drop-shadow-xl text-center border-2 border-gray-400"
                 size="large"
                 placeholder="🔍 Search Document"
               />
@@ -52,12 +53,16 @@ const Header = () => {
                   <Space>
                     <Avatar
                       size={50}
-                      className="bg-gray-800 drop-shadow-2xl shadow-xl mr-5 "
+                      className="flex justify-center bg-gray-800 drop-shadow-2xl shadow-xl mr-5 p-0 m-0 hover:cursor-pointer"
                     >
-                      <span className="font-semibold">
+                      <div className="font-semibold m-0 p-0 -mb-3">
                         {auth?.user.name.substr(0, 1).toUpperCase()}{" "}
-                      </span>
+                      </div>
+
                       {/* <div className="">{auth?.user?.name?.toUpperCase()}</div> */}
+                      <span className="p-0">
+                        <CaretDownOutlined />
+                      </span>
                     </Avatar>
                   </Space>
                 </a>

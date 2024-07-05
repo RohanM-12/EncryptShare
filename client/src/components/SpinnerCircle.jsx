@@ -5,14 +5,13 @@ import { LoadingOutlined } from "@ant-design/icons";
 const SpinnerCircle = ({ size, tip, color }) => {
   return (
     <Spin
-      //  indicator={<LoadingOutlined spin />}
+      indicator={<LoadingOutlined spin className={`text-${color}-900 `} />}
       tip={tip}
       style={{
         color: `${color}`,
-        fontSize: `${size}px`,
+        // fontSize: `${size}px`,
       }}
-      // size={`${size}` + "px"}
-      size={50}
+      size="large"
     />
   );
 };

@@ -34,7 +34,7 @@ const uploadDocument = async (req, res) => {
     const savedMetaData = await prisma.file.create({
       data: {
         mongoId: mongoData._id.toString(),
-        name: req.file.originalname,
+        name: req.body.FileName || req.file.originalname,
         size: req.file.size.toString(),
         ownerId: parseInt(req.body.ownerId),
         initializationVector: iv.toString("hex"),
@@ -146,12 +146,10 @@ const downloadDocument = async (req, res) => {
     );
 
     if (!userAccess) {
-      return res
-        .status(403)
-        .json({
-          message:
-            "What are you tryna do BRUH ? like really? you have no access to this file",
-        });
+      return res.status(403).json({
+        message:
+          "What are you tryna do BRUH ? like really? you have no access to this file",
+      });
     }
     const encryptedFileContent = await File.findById({ _id: mongoId });
 

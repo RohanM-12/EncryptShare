@@ -32,7 +32,7 @@ const DocumentCard = ({ docData, fetchData }) => {
       });
 
       if (data?.status == 200) {
-        toast.success("File deleted successfully");
+        toast.warn("File deleted successfully");
       }
       fetchData();
     } catch (error) {
@@ -70,11 +70,11 @@ const DocumentCard = ({ docData, fetchData }) => {
   };
 
   return (
-    <div className="h-auto w-fit border-2 border-gray-300 rounded-lg p-1 drop-shadow-2xl hover:scale-105 ease-out duration-300">
+    <div className="h-auto w-fit border-2 border-gray-300 rounded-lg p-1 drop-shadow-2xl lg:hover:scale-105 ease-out duration-200 sm:hover:scale-100 shadow-md ">
       <div className="w-64 flex justify-center items-center">
         <Image
           preview={false}
-          height={120}
+          height={100}
           src={getImageSrc()}
           alt="img"
           className="hover:scale-125 ease-out duration-300 "
@@ -120,7 +120,7 @@ const DocumentCard = ({ docData, fetchData }) => {
           <FaShareNodes size={25} />
         </Link>
       </div>
-      <ShareDrawer open={isOpen} setIsOpen={setIsOpen} />
+      <ShareDrawer open={isOpen} setIsOpen={setIsOpen} docData={docData} />
     </div>
   );
 };

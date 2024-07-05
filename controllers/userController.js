@@ -67,7 +67,7 @@ const signupUser = async (req, res) => {
 
     if (userData) {
       const { publicKey, privateKey } = await generateKeyPair();
-      console.log(privateKey, publicKey);
+      // console.log(privateKey, publicKey);
       const iv = crypto.randomBytes(16);
       const encryptedPrivateKey = encryptPrivateKey(
         privateKey,
@@ -96,4 +96,54 @@ const signupUser = async (req, res) => {
     });
   }
 };
-module.exports = { loginUser, signupUser };
+
+const getAllUsers = async (req, res) => {
+  try {
+    const { currLen, loadLen } = req.query;
+    const userList = await prisma.user.findMany({
+      skip: parseInt(currLen),
+      take: parseInt(loadLen),
+    });
+    const fileteredUsers = userList?.map((user) => {
+      return { ...user, password: null };
+    });
+
+    return res.status(200).json({
+      message: "success",
+      data: fileteredUsers,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: error,
+      message: error.message,
+    });
+  }
+};
+const searchUser = async (req, res) => {
+  try {
+    const { searchText } = req.query;
+
+    const userList = await prisma.user.findMany({
+      where: {
+        OR: [
+          { name: { contains: searchText, mode: "insensitive" } },
+          { email: { contains: searchText, mode: "insensitive" } },
+        ],
+      },
+      take: 5,
+    });
+    const fileteredUsers = userList?.map((user) => {
+      return { ...user, password: null };
+    });
+    return res.status(200).json({
+      message: "success",
+      data: fileteredUsers,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: error,
+      message: error.message,
+    });
+  }
+};
+module.exports = { loginUser, signupUser, getAllUsers, searchUser };
