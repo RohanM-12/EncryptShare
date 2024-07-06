@@ -43,7 +43,7 @@ model File {
 model AccessList {
   id Int @id @default(autoincrement())
   fileId Int
-  userId Int
+  userId Int 
   encryptedKey String
   file File @relation(fields: [fileId],references: [id],onDelete: Cascade)
 }

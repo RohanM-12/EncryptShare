@@ -4,6 +4,7 @@ const {
   getDocuments,
   deleteDocument,
   downloadDocument,
+  shareDocument,
 } = require("../controllers/documentController");
 const multer = require("multer");
 const { validateUser } = require("../middlewares/authMiddleware");
@@ -25,5 +26,6 @@ docRoutes.post("/upload", upload.single("file"), uploadDocument);
 docRoutes.get("/getDocuments", getDocuments);
 docRoutes.get("/download", downloadDocument);
 docRoutes.delete("/deleteDocument", deleteDocument);
+docRoutes.post("/shareDocument", shareDocument);
 
 module.exports = { docRoutes };

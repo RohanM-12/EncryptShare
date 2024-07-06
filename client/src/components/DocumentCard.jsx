@@ -70,14 +70,14 @@ const DocumentCard = ({ docData, fetchData }) => {
   };
 
   return (
-    <div className="h-auto w-fit border-2 border-gray-300 rounded-lg p-1 drop-shadow-2xl lg:hover:scale-105 ease-out duration-200 sm:hover:scale-100 shadow-md ">
+    <div className="h-auto w-fit transition-all duration-300 hover:drop-shadow-2xl hover:bg-white  bg-gray-50 border-gray-300 rounded-lg p-1 drop-shadow-xl  shadow-sm ">
       <div className="w-64 flex justify-center items-center">
         <Image
           preview={false}
           height={100}
           src={getImageSrc()}
           alt="img"
-          className="hover:scale-125 ease-out duration-200 "
+          className="hover:scale-110 ease-out duration-200 "
         />
       </div>
       <div className="my-2 text-center text-gray-600">
@@ -94,7 +94,7 @@ const DocumentCard = ({ docData, fetchData }) => {
       <div className="grid grid-cols-3 justify-center items-center  ">
         <Link
           onClick={downloadDocument}
-          className="flex justify-center hover:text-green-500 "
+          className="flex justify-center text-green-500 hover:text-green-700 "
         >
           {loading ? (
             <SpinnerCircle tip={"Downloading"} color={"#7ae582"} />
@@ -109,13 +109,13 @@ const DocumentCard = ({ docData, fetchData }) => {
           cancelText="No"
           onConfirm={handleDocumentDelete}
         >
-          <Link className="flex justify-center hover:text-red-500">
+          <Link className="flex justify-center text-red-500 hover:text-red-800">
             <MdDeleteForever size={30} />
           </Link>
         </Popconfirm>
         <Link
           onClick={() => setIsOpen(true)}
-          className="flex justify-center hover:text-blue-500"
+          className="flex justify-center text-blue-500 hover:text-blue-800"
         >
           <FaShareNodes size={25} />
         </Link>

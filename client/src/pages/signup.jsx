@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Image, Input } from "antd";
 import Password from "antd/es/input/Password";
 import { FaUser } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -29,7 +29,12 @@ const SignUp = () => {
       <div className="h-screen flex justify-center items-center ">
         <div className="grid grid-cols-1 lg:grid-cols-2 h-auto w-auto rounded-md">
           <div className="col-span-1 flex items-center">
-            <img src="/src/assets/img/loginScreenBG.gif" />
+            <Image
+              draggable="false"
+              preview={false}
+              width={400}
+              src="/src/assets/img/process.gif"
+            />
           </div>
           <div className="col-span-1 p-3">
             <Form onFinish={onFinish}>

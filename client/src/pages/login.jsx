@@ -59,7 +59,12 @@ const Login = () => {
       <div className="h-screen flex justify-center items-center ">
         <div className="grid grid-cols-1 lg:grid-cols-2 h-auto w-auto rounded-md">
           <div className="col-span-1 flex items-center">
-            <img src="/src/assets/img/loginScreenBG.gif" />
+            <Image
+              draggable="false"
+              preview={false}
+              width={400}
+              src="/src/assets/img/loginScreenBG.gif"
+            />
           </div>
           <div className="col-span-1 p-3">
             <Form onFinish={onFinish}>

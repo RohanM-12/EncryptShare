@@ -116,6 +116,7 @@ const deleteDocument = async (req, res) => {
 };
 
 function getMimeType(filename) {
+  // ye uthaya chatgpt se 😁
   const extension = filename.split(".").pop().toLowerCase();
   const mimeTypes = {
     txt: "text/plain",
@@ -212,8 +213,10 @@ const downloadDocument = async (req, res) => {
 const shareDocument = async (req, res) => {
   try {
     const { userData, fileId, ownerId } = req.body;
-    // ----------------- PLAN for further implementation of file share ---------------
-    //grab private key for owner of the file from userkeys
+    console.log("body", req.body);
+
+    // ----------------- PLAN for further implementation of file share (bhai koi chori mt kro code ki please) ---------------
+    // grab private key for owner of the file from userSchema
     // decrypt the private key of owner using master secret
     // grab the encrpyted aes key for the file from access list associated with the owner
     // decrpyt the aes key using owners private key
@@ -221,6 +224,50 @@ const shareDocument = async (req, res) => {
     // decrpyt the shared uesrs private key usign master key
     // now encrypt the aes key using the above decrpyted private key
     // now save the aes key and userID in accessList
+    const { privateKey: ownerPrivateKey } = await prisma.userKeys.findUnique({
+      where: { userId: parseInt(ownerId) },
+    });
+    if (!ownerPrivateKey) throw new Error("owner private key not found");
+    const decryptedPrivKeyOwner = decryptPrivateKey(
+      ownerPrivateKey,
+      process.env.MASTER_KEY
+    );
+    const { encryptedKey: encryptedAESKeyOwner } =
+      await prisma.accessList.findFirst({
+        where: { userId: parseInt(ownerId), fileId: parseInt(fileId) },
+      });
+    if (!encryptedAESKeyOwner) throw new Error("Access record not found");
+
+    const decryptedAESKeyOwner = await crypto.privateDecrypt(
+      decryptedPrivKeyOwner,
+      Buffer.from(encryptedAESKeyOwner, "hex")
+    );
+
+    const { privateKey: sharedUserPrivKey } = await prisma.UserKeys.findUnique({
+      where: { userId: parseInt(userData.id) },
+    });
+    // console.log("sharedUserPrivKey", sharedUserPrivKey);
+    if (!sharedUserPrivKey) throw new Error("Shared user keys not found");
+
+    const decrptedSharedUserPrivKey = decryptPrivateKey(
+      sharedUserPrivKey,
+      process.env.MASTER_KEY
+    );
+    const sharedUserEncryptedAESKey = crypto.privateEncrypt(
+      decrptedSharedUserPrivKey,
+      Buffer.from(decryptedAESKeyOwner, "hex")
+    );
+    const result = await prisma.accessList.create({
+      data: {
+        userId: parseInt(userData.id),
+        fileId: parseInt(fileId),
+        encryptedKey: sharedUserEncryptedAESKey.toString("hex"),
+      },
+    });
+    return res.status(200).json({
+      message: "success",
+      status: 200,
+    });
   } catch (error) {
     return res.status(500).json({
       error: error,
@@ -233,4 +280,5 @@ module.exports = {
   getDocuments,
   deleteDocument,
   downloadDocument,
+  shareDocument,
 };
