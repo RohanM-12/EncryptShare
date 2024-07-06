@@ -108,7 +108,7 @@ const getAllUsers = async (req, res) => {
         },
       },
       select: {
-        id: false,
+        id: true,
         name: true,
         email: true,
       },

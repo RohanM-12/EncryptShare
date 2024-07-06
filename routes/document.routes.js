@@ -5,20 +5,12 @@ const {
   deleteDocument,
   downloadDocument,
   shareDocument,
+  getFileUesrAccessList,
+  roverUserAccess,
 } = require("../controllers/documentController");
 const multer = require("multer");
 const { validateUser } = require("../middlewares/authMiddleware");
 const docRoutes = express.Router();
-
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     return cb(null, "./uploads");
-//   },
-//   filename: function (req, file, cb) {
-//     return cb(null, `${Date.now()}-${file.originalname}`);
-//   },
-// });
-// const upload = multer({ storage });
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -27,5 +19,6 @@ docRoutes.get("/getDocuments", getDocuments);
 docRoutes.get("/download", downloadDocument);
 docRoutes.delete("/deleteDocument", deleteDocument);
 docRoutes.post("/shareDocument", shareDocument);
-
+docRoutes.get("/getFileUserAccessList", getFileUesrAccessList);
+docRoutes.put("/removeUserAccess", roverUserAccess);
 module.exports = { docRoutes };

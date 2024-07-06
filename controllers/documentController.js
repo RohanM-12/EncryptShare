@@ -275,10 +275,65 @@ const shareDocument = async (req, res) => {
     });
   }
 };
+
+const getFileUesrAccessList = async (req, res) => {
+  try {
+    const { fileId } = req.query;
+    const data = await prisma.accessList.findMany({
+      where: { fileId: parseInt(fileId) },
+
+      include: {
+        user: {
+          // lowercase `user`
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    const userData = data?.map((item) => item.user);
+    return res.status(200).json({
+      message: "success",
+      data: userData,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error,
+      message: error.message,
+    });
+  }
+};
+const roverUserAccess = async (req, res) => {
+  try {
+    const { fileId, userId } = req.body;
+    const data = await prisma.accessList.delete({
+      where: {
+        fileId_userId: {
+          fileId: parseInt(fileId),
+          userId: parseInt(userId),
+        },
+      },
+    });
+    return res.status(200).json({
+      message: "success",
+      status: 200,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error,
+      message: error.message,
+    });
+  }
+};
 module.exports = {
   uploadDocument,
   getDocuments,
   deleteDocument,
   downloadDocument,
   shareDocument,
+  getFileUesrAccessList,
+  roverUserAccess,
 };

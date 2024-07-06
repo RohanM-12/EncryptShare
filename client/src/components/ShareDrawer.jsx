@@ -15,6 +15,7 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [userAccessList, setUserAccessList] = useState([]);
   const searchTimeOutRef = useRef(null);
   const [auth] = useAuth();
   const fetchData = async (params) => {
@@ -31,9 +32,22 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
     setLoading(false);
   };
 
+  const fetchUserAccessList = async () => {
+    try {
+      const { data } = await axios.get(
+        "/api/v1/document/getFileUserAccessList",
+        { params: { fileId: docData?.id } }
+      );
+      setSelectedUsers(data?.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   useEffect(() => {
     if (open) {
       fetchData({ currLen: 0, loadLen: 5, userId: auth?.user?.id });
+      fetchUserAccessList();
     }
   }, [open]);
 
@@ -90,10 +104,10 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
             <div className="grid grid-cols-1 px-5 py-1">
               {!loading &&
                 users?.length > 0 &&
-                users?.map((userData, i) => (
+                users?.map((userData) => (
                   <UserListCard
                     userData={userData}
-                    key={i}
+                    key={userData?.id}
                     selectedUsers={selectedUsers}
                     setSelectedUsers={setSelectedUsers}
                     docData={docData}
@@ -122,27 +136,32 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
                 </span>
               </div>
             </div>
-            <div className="flex justify-center">
-              <Button
-                type="default"
-                className=" "
-                onClick={() => setSelectedUsers([])}
-              >
-                <MdOutlinePlaylistRemove size={27} /> Revoke all
-              </Button>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-3 mt-5 ">
-              {selectedUsers?.map((user) => (
-                <UserAccessCard
-                  key={user?.id}
-                  selectedUsers={selectedUsers}
-                  user={user}
-                  setSelectedUsers={setSelectedUsers}
-                  docData={docData}
-                />
-              ))}
-            </div>
-            {selectedUsers.length === 0 && (
+
+            {selectedUsers?.length > 0 && (
+              <>
+                <div className="flex justify-center">
+                  <Button
+                    type="default"
+                    className=" mb-2 "
+                    onClick={() => setSelectedUsers([])}
+                  >
+                    <MdOutlinePlaylistRemove size={27} /> Revoke all
+                  </Button>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-3 mt-5 ">
+                  {selectedUsers?.map((user) => (
+                    <UserAccessCard
+                      key={user?.id}
+                      selectedUsers={selectedUsers}
+                      user={user}
+                      setSelectedUsers={setSelectedUsers}
+                      docData={docData}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+            {selectedUsers?.length === 0 && (
               <>
                 <p className="text-center text-md text-gray-500 font-semibold">
                   No user added

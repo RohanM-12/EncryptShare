@@ -1,11 +1,25 @@
 import { Avatar, Tooltip } from "antd";
+import axios from "axios";
 import React from "react";
 import { IoMdCloseCircle } from "react-icons/io";
+import { toast } from "react-toastify";
 
-const UserAccessCard = ({ user, selectedUsers, setSelectedUsers }) => {
-  const handleRemoveUser = (value) => {
-    const temp = selectedUsers?.filter((user) => user?.id !== value?.id);
-    setSelectedUsers([...temp]);
+const UserAccessCard = ({ user, selectedUsers, setSelectedUsers, docData }) => {
+  console.log(user);
+  const handleRemoveUser = async (value) => {
+    try {
+      const { data } = await axios.put("/api/v1/document/removeUserAccess", {
+        userId: user?.id,
+        fileId: docData?.id,
+      });
+      if (data?.status == 200) {
+        const temp = selectedUsers?.filter((user) => user?.id !== value?.id);
+        setSelectedUsers([...temp]);
+        toast.warn(`Access removed for ${user?.name}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

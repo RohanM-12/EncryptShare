@@ -19,6 +19,7 @@ model User {
   email String @unique 
   password String
   userKeys UserKeys?
+  accessList AccessList[]
 }
 
 model UserKeys {
@@ -46,5 +47,7 @@ model AccessList {
   userId Int 
   encryptedKey String
   file File @relation(fields: [fileId],references: [id],onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+   @@unique([fileId, userId]) 
 }
 
