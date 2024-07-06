@@ -96,21 +96,27 @@ const signupUser = async (req, res) => {
     });
   }
 };
-
 const getAllUsers = async (req, res) => {
   try {
-    const { currLen, loadLen } = req.query;
+    const { currLen, loadLen, userId } = req.query;
     const userList = await prisma.user.findMany({
       skip: parseInt(currLen),
       take: parseInt(loadLen),
-    });
-    const fileteredUsers = userList?.map((user) => {
-      return { ...user, password: null };
+      where: {
+        id: {
+          not: parseInt(userId),
+        },
+      },
+      select: {
+        id: false,
+        name: true,
+        email: true,
+      },
     });
 
     return res.status(200).json({
       message: "success",
-      data: fileteredUsers,
+      data: userList,
     });
   } catch (error) {
     return res.status(500).json({
@@ -119,6 +125,7 @@ const getAllUsers = async (req, res) => {
     });
   }
 };
+
 const searchUser = async (req, res) => {
   try {
     const { searchText } = req.query;

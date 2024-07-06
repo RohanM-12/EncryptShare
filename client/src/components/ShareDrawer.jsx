@@ -9,13 +9,14 @@ import SpinnerCircle from "./SpinnerCircle";
 import { MdOutlinePlaylistRemove } from "react-icons/md";
 import { TiUserAdd } from "react-icons/ti";
 import UserAccessCard from "./UserAccessCard";
+import { useAuth } from "../context/authcontext";
 const ShareDrawer = ({ open, setIsOpen, docData }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [searchText, setSearchText] = useState("");
   const searchTimeOutRef = useRef(null);
-
+  const [auth] = useAuth();
   const fetchData = async (params) => {
     try {
       setLoading(true);
@@ -32,7 +33,7 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
 
   useEffect(() => {
     if (open) {
-      fetchData({ currLen: 0, loadLen: 5 });
+      fetchData({ currLen: 0, loadLen: 5, userId: auth?.user?.id });
     }
   }, [open]);
 
@@ -45,7 +46,7 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
         fetchData({ searchText });
       }, 1000);
     } else if (open) {
-      fetchData({ currLen: 0, loadLen: 5 });
+      fetchData({ currLen: 0, loadLen: 5, userId: auth?.user?.id });
     }
   }, [searchText]);
 
