@@ -328,6 +328,28 @@ const roverUserAccess = async (req, res) => {
     });
   }
 };
+const removeAllUserAccess = async (req, res) => {
+  try {
+    const { fileId, ownerId } = req.body;
+    const result = await prisma.accessList.deleteMany({
+      where: {
+        fileId: parseInt(fileId),
+        NOT: {
+          userId: parseInt(ownerId),
+        },
+      },
+    });
+    return res.status(200).json({
+      message: "success",
+      status: 200,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error,
+      message: error.message,
+    });
+  }
+};
 module.exports = {
   uploadDocument,
   getDocuments,
@@ -336,4 +358,5 @@ module.exports = {
   shareDocument,
   getFileUesrAccessList,
   roverUserAccess,
+  removeAllUserAccess,
 };

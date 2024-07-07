@@ -80,6 +80,12 @@ const UploadDocumentModal = ({ open, setOpen, fetchData }) => {
 
   const handleChange = (info) => {
     let newFile = info.file;
+    const maxSize = 5 * 1024 * 1024;
+
+    if (newFile.size > maxSize) {
+      toast.error("File size exceeds 5MB limit. Please choose a smaller file.");
+      return;
+    }
     if (!newFile.type.startsWith("image/")) {
       if (newFile.type === "text/plain") {
         newFile.thumbUrl = "/src/assets/img/txt.png";
@@ -148,7 +154,7 @@ const UploadDocumentModal = ({ open, setOpen, fetchData }) => {
         onCancel={handleCancel}
       >
         <Form layout="vertical" encType="multipart/form-data" form={form}>
-          <Form.Item name={"File"} className="flex justify-center">
+          <Form.Item name={"File"} className="flex justify-center ">
             <Upload
               accept="*/*"
               fileList={file ? [file] : []}
@@ -185,7 +191,7 @@ const UploadDocumentModal = ({ open, setOpen, fetchData }) => {
             <Input
               placeholder="Rename file"
               name="fileName"
-              className="text-center w-2/3"
+              className="text-center w-2/3 drop-shadow-sm"
               onChange={(e) => setFileName(e.target.value)}
               addonAfter={fileExtension}
             />

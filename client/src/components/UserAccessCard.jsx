@@ -40,10 +40,12 @@ const UserAccessCard = ({ user, selectedUsers, setSelectedUsers, docData }) => {
         <Tooltip
           title={
             <>
-              <div className="text-center font-bold text-blue-500">
+              <div className="text-center font-bold text-gray-600">
                 {auth?.user.id == user?.id ? "You" : ""}
               </div>
-              {user?.email}
+              <span className="text-center font-bold text-gray-600">
+                {user?.email}
+              </span>
             </>
           }
           color="#c0c0c0"

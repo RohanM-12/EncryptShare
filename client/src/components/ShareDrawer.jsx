@@ -1,14 +1,5 @@
 /* eslint-disable react/prop-types */
-import {
-  Avatar,
-  Button,
-  Drawer,
-  Empty,
-  Image,
-  Input,
-  Popconfirm,
-  Tooltip,
-} from "antd";
+import { Avatar, Button, Drawer, Empty, Image, Input, Popconfirm } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { FaShareNodes } from "react-icons/fa6";
 import { HiMiniUsers } from "react-icons/hi2";
@@ -19,6 +10,7 @@ import { MdOutlinePlaylistRemove } from "react-icons/md";
 import { TiUserAdd } from "react-icons/ti";
 import UserAccessCard from "./UserAccessCard";
 import { useAuth } from "../context/authcontext";
+import { toast } from "react-toastify";
 const ShareDrawer = ({ open, setIsOpen, docData }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -77,6 +69,25 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
     setSearchText(e.target.value);
   };
 
+  const handleRemoveAllAccess = async () => {
+    try {
+      if (selectedUsers?.length < 2) {
+        return;
+      }
+      const { data } = await axios.put("/api/v1/document/removeAllUserAccess", {
+        ownerId: auth?.user?.id,
+        fileId: docData?.id,
+      });
+      if (data?.status == 200) {
+        toast.warn(`All access revoked for file ${docData?.name}`);
+        setSelectedUsers([]);
+        fetchUserAccessList();
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <div>
       <Drawer
@@ -97,7 +108,7 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
         height={520}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 ">
-          <div className="px-2">
+          <div className="px-2   ">
             <div className="flex justify-center text-gray-600 items-center text-center text-lg font-semibold ">
               List of Users
               <HiMiniUsers size={25} className="mx-2 text-blue-500" />
@@ -134,6 +145,7 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
               )}
             </div>
           </div>
+
           <div className="px-5">
             <div className="flex justify-center text-lg font-semibold">
               <div className="flex justify-center items-center mb-2">
@@ -155,18 +167,14 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
                     okText="Yes"
                     cancelText="No"
                     placement="bottom"
-                    // onConfirm={handleRevokeAllAccess}
+                    onConfirm={handleRemoveAllAccess}
                   >
-                    <Button
-                      type="dashed"
-                      className=" mb-2 text-red-400"
-                      // onClick={() => setSelectedUsers([])}
-                    >
+                    <Button type="dashed" className=" mb-2 text-red-400">
                       <MdOutlinePlaylistRemove size={27} /> Revoke all
                     </Button>
                   </Popconfirm>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-3 mt-5 ">
+                <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-3 mt-5   ">
                   {selectedUsers?.map((user) => (
                     <UserAccessCard
                       key={user?.id}
@@ -182,7 +190,6 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
             {selectedUsers?.length === 0 && (
               <>
                 <div className="flex justify-center ">
-                  {/* <Empty description="No user selected" /> */}
                   <div className="flex justify-center">
                     <Image
                       loading="lazy"
