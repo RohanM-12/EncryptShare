@@ -52,8 +52,8 @@ const Header = () => {
                 >
                   <Space>
                     <Avatar
-                      size={50}
-                      className="flex justify-center bg-gray-800 drop-shadow-2xl shadow-xl mr-5 p-0 m-0 hover:cursor-pointer"
+                      size={55}
+                      className="flex justify-center border-2 border-white bg-stone-800 drop-shadow-2xl shadow-xl mr-5 p-0 m-0 hover:cursor-pointer"
                     >
                       <div className="font-semibold m-0 p-0 -mb-3">
                         {auth?.user.name.substr(0, 1).toUpperCase()}{" "}

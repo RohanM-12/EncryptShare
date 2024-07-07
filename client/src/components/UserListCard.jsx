@@ -18,30 +18,36 @@ const UserListCard = ({
         fileId: docData?.id,
         userData,
       });
+
       if (data?.status == 200) {
         setSelectedUsers([...selectedUsers, userData]);
         toast.success(`Access granted to ${userData?.name}`);
       }
     } catch (error) {
       console.log(error.message);
+      if (error.response.data.error.code == "P2002") {
+        toast.error(`User already has access to ${docData?.name}`);
+      }
     }
   };
   return (
     <>
-      <div className="flex justify-center ">
-        <div className="flex items-center border-2 drop-shadow-2xl border-gray-300 my-0.5 rounded-xl hover:border-gray-400 w-80 md:w-2/3 ">
-          <Avatar className="float-start p-5 bg-gradient-to-br from-slate-500 to-stone-500 text-xl m-2 border-2 border-white drop-shadow-2xl">
+      <div className="flex justify-center">
+        <div className="flex items-center border-2 drop-shadow-2xl border-gray-300 my-0.5 rounded-xl hover:border-gray-400 w-80 md:w-2/3">
+          <Avatar className="float-start p-5 bg-gradient-to-br from-blue-400 to-teal-200 text-xl m-2 border-2 border-white drop-shadow-2xl">
             {userData?.name[0]?.toUpperCase()}
           </Avatar>
-          <div className="mx-2 text-black">{userData?.name}</div>
-          <div className="mx-2 text-gray-500 w-screen">
-            Email : {userData?.email}
+          <div className="flex-grow">
+            <div className="mx-2 text-black">{userData?.name}</div>
+            <div className="mx-2 text-gray-500 w-fit">
+              Email: {userData?.email}
+            </div>
           </div>
           <PlusCircleOutlined
             onClick={() => {
               handleAddAccess();
             }}
-            className="text-2xl text-gray-600 hover:cursor-pointer mx-3 "
+            className="text-2xl text-gray-600 hover:cursor-pointer mx-3"
           />
         </div>
       </div>

@@ -1,5 +1,14 @@
 /* eslint-disable react/prop-types */
-import { Avatar, Button, Drawer, Empty, Image, Input, Tooltip } from "antd";
+import {
+  Avatar,
+  Button,
+  Drawer,
+  Empty,
+  Image,
+  Input,
+  Popconfirm,
+  Tooltip,
+} from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { FaShareNodes } from "react-icons/fa6";
 import { HiMiniUsers } from "react-icons/hi2";
@@ -73,9 +82,9 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
       <Drawer
         title={
           <div className="flex justify-center items-center p-0 m-0">
-            <FaShareNodes size={25} className="mx-2 text-gray-500" />
+            <FaShareNodes size={25} className="mx-2 text-blue-600" />
             <span className="text-md font-bold">
-              <span className="text-gray-500 hidden lg:inline"> Share : </span>
+              <span className="text-blue-500 hidden lg:inline"> Share : </span>
               <span className="text-clip text-gray-600">{docData?.name}</span>
             </span>
           </div>
@@ -91,7 +100,7 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
           <div className="px-2">
             <div className="flex justify-center text-gray-600 items-center text-center text-lg font-semibold ">
               List of Users
-              <HiMiniUsers size={25} className="mx-2 text-gray-500" />
+              <HiMiniUsers size={25} className="mx-2 text-blue-500" />
             </div>
             <div className="flex justify-center my-0.5">
               <Input
@@ -132,7 +141,7 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
                   Add user to give access to the file{" "}
                 </span>
                 <span>
-                  <TiUserAdd size={25} className="text-gray-500 mx-1" />
+                  <TiUserAdd size={25} className="text-blue-500 mx-1" />
                 </span>
               </div>
             </div>
@@ -140,13 +149,22 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
             {selectedUsers?.length > 0 && (
               <>
                 <div className="flex justify-center">
-                  <Button
-                    type="default"
-                    className=" mb-2 "
-                    onClick={() => setSelectedUsers([])}
+                  <Popconfirm
+                    title="Clear user access"
+                    description="Are you sure to revoke all access for this file?"
+                    okText="Yes"
+                    cancelText="No"
+                    placement="bottom"
+                    // onConfirm={handleRevokeAllAccess}
                   >
-                    <MdOutlinePlaylistRemove size={27} /> Revoke all
-                  </Button>
+                    <Button
+                      type="dashed"
+                      className=" mb-2 text-red-400"
+                      // onClick={() => setSelectedUsers([])}
+                    >
+                      <MdOutlinePlaylistRemove size={27} /> Revoke all
+                    </Button>
+                  </Popconfirm>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-3 mt-5 ">
                   {selectedUsers?.map((user) => (
@@ -163,9 +181,6 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
             )}
             {selectedUsers?.length === 0 && (
               <>
-                <p className="text-center text-md text-gray-500 font-semibold">
-                  No user added
-                </p>
                 <div className="flex justify-center ">
                   {/* <Empty description="No user selected" /> */}
                   <div className="flex justify-center">
@@ -178,6 +193,9 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
                     />
                   </div>
                 </div>
+                <p className="text-center text-md text-gray-500 font-semibold ">
+                  No user added
+                </p>
               </>
             )}
           </div>

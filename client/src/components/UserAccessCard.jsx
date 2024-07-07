@@ -3,9 +3,10 @@ import axios from "axios";
 import React from "react";
 import { IoMdCloseCircle } from "react-icons/io";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/authcontext";
 
 const UserAccessCard = ({ user, selectedUsers, setSelectedUsers, docData }) => {
-  console.log(user);
+  const [auth] = useAuth();
   const handleRemoveUser = async (value) => {
     try {
       const { data } = await axios.put("/api/v1/document/removeUserAccess", {
@@ -29,16 +30,26 @@ const UserAccessCard = ({ user, selectedUsers, setSelectedUsers, docData }) => {
     >
       <button
         onClick={() => handleRemoveUser(user)}
-        className="absolute top-0 right-0 text-gray-400 hover:text-red-600 transition duration-200"
+        className="absolute -top-1 -right-1 text-gray-400 hover:text-red-600 transition duration-200"
         aria-label="Remove user"
       >
-        <IoMdCloseCircle size={24} />
+        {auth?.user.id != user?.id && <IoMdCloseCircle size={24} />}
       </button>
 
       <div className="flex flex-col items-center">
-        <Tooltip title={user?.email} color="#778da9">
+        <Tooltip
+          title={
+            <>
+              <div className="text-center font-bold text-blue-500">
+                {auth?.user.id == user?.id ? "You" : ""}
+              </div>
+              {user?.email}
+            </>
+          }
+          color="#c0c0c0"
+        >
           <div className="relative mt-1">
-            <Avatar className="w-10 h-10 text-xl font-semibold bg-gradient-to-br from-slate-500 to-stone-500 text-white border-2 border-white shadow-md">
+            <Avatar className="w-10 h-10 text-xl font-semibold bg-gradient-to-br from-blue-400 to-teal-200 text-white border-2 border-white shadow-md hover:cursor-pointer">
               {user?.name[0]?.toUpperCase()}
             </Avatar>
           </div>
