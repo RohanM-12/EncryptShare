@@ -212,51 +212,58 @@ const downloadDocument = async (req, res) => {
 
 const shareDocument = async (req, res) => {
   try {
+    // ----------------- PLAN for further implementation of file share (bhai koi chori mt kro code ki please) ---------------
+    //     // grab private key for owner of the file from userSchema
+    //     // decrypt the private key of owner using master secret
+    //     // grab the encrpyted aes key for the file from access list associated with the owner
+    //     // decrpyt the aes key using owners private key
+    //     // grab the shared users private key
+    //     // decrpyt the shared uesrs private key usign master key
+    //     // now encrypt the aes key using the above decrpyted private key
+    //     // now save the aes key and userID in accessList
+
     const { userData, fileId, ownerId } = req.body;
     console.log("body", req.body);
 
-    // ----------------- PLAN for further implementation of file share (bhai koi chori mt kro code ki please) ---------------
-    // grab private key for owner of the file from userSchema
-    // decrypt the private key of owner using master secret
-    // grab the encrpyted aes key for the file from access list associated with the owner
-    // decrpyt the aes key using owners private key
-    // grab the shared users private key
-    // decrpyt the shared uesrs private key usign master key
-    // now encrypt the aes key using the above decrpyted private key
-    // now save the aes key and userID in accessList
-    const { privateKey: ownerPrivateKey } = await prisma.userKeys.findUnique({
+    const ownerKeyData = await prisma.UserKeys.findUnique({
       where: { userId: parseInt(ownerId) },
     });
-    if (!ownerPrivateKey) throw new Error("owner private key not found");
+    if (!ownerKeyData) throw new Error("Owner private key not found");
+
     const decryptedPrivKeyOwner = decryptPrivateKey(
-      ownerPrivateKey,
+      ownerKeyData.privateKey,
       process.env.MASTER_KEY
     );
-    const { encryptedKey: encryptedAESKeyOwner } =
-      await prisma.accessList.findFirst({
-        where: { userId: parseInt(ownerId), fileId: parseInt(fileId) },
-      });
-    if (!encryptedAESKeyOwner) throw new Error("Access record not found");
+    const accessListEntry = await prisma.accessList.findFirst({
+      where: { userId: parseInt(ownerId), fileId: parseInt(fileId) },
+    });
+    if (!accessListEntry) throw new Error("Access record not found");
 
-    const decryptedAESKeyOwner = await crypto.privateDecrypt(
-      decryptedPrivKeyOwner,
-      Buffer.from(encryptedAESKeyOwner, "hex")
+    const decryptedAESKeyOwner = crypto.privateDecrypt(
+      {
+        key: decryptedPrivKeyOwner,
+        padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+      },
+      Buffer.from(accessListEntry.encryptedKey, "hex")
     );
 
-    const { privateKey: sharedUserPrivKey } = await prisma.UserKeys.findUnique({
+    const sharedUserKeyData = await prisma.UserKeys.findUnique({
       where: { userId: parseInt(userData.id) },
     });
-    // console.log("sharedUserPrivKey", sharedUserPrivKey);
-    if (!sharedUserPrivKey) throw new Error("Shared user keys not found");
+    if (!sharedUserKeyData) throw new Error("Shared user keys not found");
 
-    const decrptedSharedUserPrivKey = decryptPrivateKey(
-      sharedUserPrivKey,
+    const decryptedSharedUserPrivKey = decryptPrivateKey(
+      sharedUserKeyData.privateKey,
       process.env.MASTER_KEY
     );
-    const sharedUserEncryptedAESKey = crypto.privateEncrypt(
-      decrptedSharedUserPrivKey,
-      Buffer.from(decryptedAESKeyOwner, "hex")
+    const sharedUserEncryptedAESKey = crypto.publicEncrypt(
+      {
+        key: decryptedSharedUserPrivKey,
+        padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+      },
+      decryptedAESKeyOwner
     );
+
     const result = await prisma.accessList.create({
       data: {
         userId: parseInt(userData.id),
@@ -264,6 +271,7 @@ const shareDocument = async (req, res) => {
         encryptedKey: sharedUserEncryptedAESKey.toString("hex"),
       },
     });
+
     return res.status(200).json({
       message: "success",
       status: 200,
