@@ -11,7 +11,7 @@ import { useAuth } from "../context/authcontext";
 import { filesize } from "filesize";
 import ShareDrawer from "./ShareDrawer";
 import SpinnerCircle from "./SpinnerCircle";
-const DocumentCard = ({ docData, fetchData }) => {
+const DocumentCard = ({ docData, fetchData, shared }) => {
   const docTypes = ["txt", "pdf", "pptx", "docx", "xlsx"];
   const [auth] = useAuth();
   const [loading, setLoading] = useState(false);
@@ -91,35 +91,50 @@ const DocumentCard = ({ docData, fetchData }) => {
         {filesize(docData.size)}
       </div>
       <div className=" border-b-2 my-1 border-gray-300"></div>
-      <div className="grid grid-cols-3 justify-center items-center  ">
-        <Link
-          onClick={downloadDocument}
-          className="flex justify-center text-green-500 hover:text-green-700 "
-        >
-          {loading ? (
-            <SpinnerCircle tip={"Downloading"} color={"#7ae582"} />
-          ) : (
-            <FaCloudDownloadAlt size={30} />
-          )}
-        </Link>
-        <Popconfirm
-          title="Delete document"
-          description="Are you sure to delete the file?"
-          okText="Yes"
-          cancelText="No"
-          onConfirm={handleDocumentDelete}
-        >
-          <Link className="flex justify-center text-red-500 hover:text-red-800">
-            <MdDeleteForever size={30} />
+      {shared == 1 ? (
+        <div className="grid grid-cols-3 justify-center items-center  ">
+          <Link
+            onClick={downloadDocument}
+            className="flex justify-center text-green-500 hover:text-green-700 "
+          >
+            {loading ? (
+              <SpinnerCircle tip={"Downloading"} color={"#7ae582"} />
+            ) : (
+              <FaCloudDownloadAlt size={30} />
+            )}
           </Link>
-        </Popconfirm>
-        <Link
-          onClick={() => setIsOpen(true)}
-          className="flex justify-center text-blue-500 hover:text-blue-800"
-        >
-          <FaShareNodes size={25} />
-        </Link>
-      </div>
+          <Popconfirm
+            title="Delete document"
+            description="Are you sure to delete the file?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={handleDocumentDelete}
+          >
+            <Link className="flex justify-center text-red-500 hover:text-red-800">
+              <MdDeleteForever size={30} />
+            </Link>
+          </Popconfirm>
+          <Link
+            onClick={() => setIsOpen(true)}
+            className="flex justify-center text-blue-500 hover:text-blue-800"
+          >
+            <FaShareNodes size={25} />
+          </Link>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 justify-center items-center  ">
+          <Link
+            onClick={downloadDocument}
+            className="flex justify-center text-green-500 hover:text-green-700 "
+          >
+            {loading ? (
+              <SpinnerCircle tip={"Downloading"} color={"#7ae582"} />
+            ) : (
+              <FaCloudDownloadAlt size={30} />
+            )}
+          </Link>{" "}
+        </div>
+      )}
       <ShareDrawer open={isOpen} setIsOpen={setIsOpen} docData={docData} />
     </div>
   );

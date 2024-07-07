@@ -26,15 +26,15 @@ const MyDocuments = () => {
   };
   useEffect(() => {
     fetchData();
-  }, [auth.user]);
+  }, [auth?.user]);
   return (
     <>
       <div className="grid grid-cols-1 gap-10 px-10 py-5 lg:grid-cols-4 lg:px-20 md:grid-cols-3 ">
         {documents?.length > 0 &&
           documents?.map((item, i) => {
             return (
-              <div key={item.id} className="drop-shadow-md">
-                <DocumentCard docData={item} fetchData={fetchData} />
+              <div key={item?.id} className="drop-shadow-md">
+                <DocumentCard docData={item} fetchData={fetchData} shared={1} />
               </div>
             );
           })}

@@ -8,6 +8,7 @@ const {
   getFileUesrAccessList,
   roverUserAccess,
   removeAllUserAccess,
+  getSharedDocuments,
 } = require("../controllers/documentController");
 const multer = require("multer");
 const { validateUser } = require("../middlewares/authMiddleware");
@@ -23,5 +24,5 @@ docRoutes.post("/shareDocument", shareDocument);
 docRoutes.get("/getFileUserAccessList", getFileUesrAccessList);
 docRoutes.put("/removeUserAccess", roverUserAccess);
 docRoutes.put("/removeAllUserAccess", removeAllUserAccess);
-
+docRoutes.get("/getSharedDocuments", getSharedDocuments);
 module.exports = { docRoutes };

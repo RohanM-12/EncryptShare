@@ -344,7 +344,31 @@ const removeAllUserAccess = async (req, res) => {
       status: 200,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
+      error: error,
+      message: error.message,
+    });
+  }
+};
+const getSharedDocuments = async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const accessListData = await prisma.accessList.findMany({
+      where: { userId: parseInt(userId) },
+      select: { fileId: true },
+    });
+    const fileIds = accessListData.map((item) => item.fileId);
+    const fileData = await prisma.file.findMany({
+      where: { id: { in: fileIds }, ownerId: { not: parseInt(userId) } },
+    });
+
+    return res.status(200).json({
+      message: "success",
+      status: 200,
+      data: fileData,
+    });
+  } catch (error) {
+    return res.status(500).json({
       error: error,
       message: error.message,
     });
@@ -359,4 +383,5 @@ module.exports = {
   getFileUesrAccessList,
   roverUserAccess,
   removeAllUserAccess,
+  getSharedDocuments,
 };
