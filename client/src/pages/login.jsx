@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Input, Form, Image } from "antd";
 import Password from "antd/es/input/Password";
 import { IoMdLogIn } from "react-icons/io";
@@ -9,11 +9,16 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
 import { useAuth } from "../context/authcontext";
-
 const Login = () => {
   //Cockroach Db with corp account used for postgres  3ZRMh8szU5Jf__DSHJBmQA
   const [auth, setAuth] = useAuth();
+
   const navigate = useNavigate();
+  useEffect(() => {
+    if (auth?.user) {
+      navigate("/");
+    }
+  }, [auth?.user]);
   const [searchParams] = useSearchParams();
 
   const [email, setEmail] = useState(searchParams.get("email") || "");

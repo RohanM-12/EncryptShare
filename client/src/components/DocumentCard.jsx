@@ -92,7 +92,7 @@ const DocumentCard = ({ docData, fetchData, shared }) => {
               size={35}
               className="drop-shadow-md border-2 border-white absolute top-2 right-2 bg-gradient-to-r from-blue-400 to-indigo-500 text-white cursor-pointer"
             >
-              {docData?.senderName[0]}
+              {docData?.senderName[0]?.toUpperCase()}
             </Avatar>
           </Tooltip>
         )}
