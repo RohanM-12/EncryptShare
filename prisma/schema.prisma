@@ -1,15 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider =  "postgresql"
   url      = env("POSTGRESQL_URL")
 }
 
@@ -20,6 +15,7 @@ model User {
   password String
   userKeys UserKeys?
   accessList AccessList[]
+  file File[]
 }
 
 model UserKeys {
@@ -38,7 +34,9 @@ model File {
   size String
   ownerId Int
   initializationVector String @default("none")
+  sharedDateTime DateTime @default(now())
   accessList AccessList[]
+  owner User @relation(fields: [ownerId],references: [id],onDelete: Cascade)
 }
 
 model AccessList {
@@ -46,6 +44,7 @@ model AccessList {
   fileId Int
   userId Int 
   encryptedKey String
+  sharedDateTime DateTime @default(now())
   file File @relation(fields: [fileId],references: [id],onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
    @@unique([fileId, userId]) 

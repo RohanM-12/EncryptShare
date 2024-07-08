@@ -12,7 +12,6 @@ const SignUp = () => {
   const onFinish = async (values) => {
     try {
       const res = await axios.post("/api/v1/user/signup", values);
-      console.log(res.data);
       if (res?.data?.status == 201) {
         navigate(`/login?email=${encodeURIComponent(res?.data?.user?.email)}`);
         toast.success("User registered successfully, Please login to proceed");

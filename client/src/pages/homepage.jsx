@@ -13,19 +13,19 @@ const Homepage = () => {
       key: "1",
       label: "My Documents",
       icon: <IoDocumentTextOutline size={20} className="mx-1" />,
-      content: <MyDocuments />,
+      content: <MyDocuments tabName="myDocs" />,
     },
     {
       key: "2",
       label: "Shared Documents",
       icon: <TbLockShare size={20} className="mx-1" />,
-      content: <SharedDocuments />,
+      content: <SharedDocuments tabName="sharedDocs" />,
     },
   ];
 
   return (
     <>
-      <div className="p-2">
+      <div className="p-1">
         <Tabs className="font-semibold" defaultActiveKey="1" centered>
           {items.map((item) => (
             <TabPane

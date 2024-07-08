@@ -1,5 +1,5 @@
 import { Avatar, Dropdown, Input, Space } from "antd";
-import React, { Children } from "react";
+import React from "react";
 import { TbLogout } from "react-icons/tb";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authcontext";
@@ -10,7 +10,7 @@ const Header = () => {
   const handleLogOut = () => {
     localStorage.removeItem("user");
     setAuth({ user: null, token: "" });
-    // navigate("/login");
+    navigate("/login");
   };
   const items = [
     {
@@ -32,9 +32,9 @@ const Header = () => {
       {auth && auth?.user && (
         <div className="space-x-5 w-sreen p-5">
           <div className=" grid grid-cols-3 w-full">
-            <div className=" flex justify-end col-span-2 ">
+            <div className=" flex justify-end items-center col-span-2 ">
               <Input
-                className="w-3/2 lg:w-1/2 md:2/3 h-12 drop-shadow-xl text-center border-2 border-gray-400"
+                className="w-3/2 lg:w-1/2 md:2/3 h-12 drop-shadow-md text-center border-2 bg-white border-gray-400"
                 size="large"
                 placeholder="🔍 Search Document"
               />
@@ -53,7 +53,7 @@ const Header = () => {
                   <Space>
                     <Avatar
                       size={55}
-                      className="flex justify-center border-2 border-white bg-stone-800 drop-shadow-2xl shadow-xl mr-5 p-0 m-0 hover:cursor-pointer"
+                      className="flex justify-center border-2 border-white bg-gradient-to-br from-stone-800 to-slate-700  drop-shadow-md shadow-xl hover:cursor-pointer  mr-3 p-0 "
                     >
                       <div className="font-semibold m-0 p-0 -mb-3">
                         {auth?.user.name.substr(0, 1).toUpperCase()}{" "}

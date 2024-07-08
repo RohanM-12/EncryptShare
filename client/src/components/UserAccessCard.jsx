@@ -51,7 +51,7 @@ const UserAccessCard = ({ user, selectedUsers, setSelectedUsers, docData }) => {
           color="#c0c0c0"
         >
           <div className="relative mt-1">
-            <Avatar className="w-10 h-10 text-xl font-semibold bg-gradient-to-br from-blue-400 to-teal-200 text-white border-2 border-white shadow-md hover:cursor-pointer">
+            <Avatar className="w-10 h-10 text-xl font-semibold bg-gradient-to-br from-indigo-600 to-purple-400 text-white border-2 border-white shadow-md hover:cursor-pointer">
               {user?.name[0]?.toUpperCase()}
             </Avatar>
           </div>

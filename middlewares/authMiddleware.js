@@ -6,7 +6,6 @@ const validateUser = (req, res, next) => {
       req.headers.authorization,
       process.env.JWT_SECRET
     );
-    console.log("decode", decode);
     next();
   } catch (error) {
     console.log(error.message);

@@ -11,7 +11,6 @@ const loginUser = async (req, res) => {
     const userObject = await prisma.user.findUnique({
       where: { email },
     });
-    console.log(userObject);
     if (!userObject) {
       return res.json({
         status: 403,
@@ -48,7 +47,6 @@ const loginUser = async (req, res) => {
 const signupUser = async (req, res) => {
   try {
     const { email, password, userName } = req.body;
-    console.log(req.body);
     const checkUser = await prisma.user.findUnique({
       where: { email: email },
     });

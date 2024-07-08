@@ -11,10 +11,12 @@ const SharedDocuments = () => {
   const [loading, setLoading] = useState();
   const fetchData = async () => {
     try {
+      setLoading(true);
       const { data } = await axios.get("/api/v1/document/getSharedDocuments", {
         params: { userId: auth?.user?.id },
       });
       setSharedDocuments(data?.data);
+      setLoading(false);
     } catch (error) {
       console.log(error.message);
     }

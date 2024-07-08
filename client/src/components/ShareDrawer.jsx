@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Avatar, Button, Drawer, Empty, Image, Input, Popconfirm } from "antd";
+import { Button, Drawer, Empty, Image, Input, Popconfirm } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { FaShareNodes } from "react-icons/fa6";
 import { HiMiniUsers } from "react-icons/hi2";
@@ -115,7 +115,7 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
             </div>
             <div className="flex justify-center my-0.5">
               <Input
-                placeholder=" 🧑🏻‍💼 Search User with Email/User name"
+                placeholder="Search User with Email/User name"
                 className="w-3/2 md:w-1/2 text-center border-2 border-gray-400"
                 size="large"
                 onChange={handleSearch}

@@ -7,8 +7,8 @@ require("dotenv").config();
 const File = require("../models/fileModel");
 const uploadDocument = async (req, res) => {
   try {
-    console.log("file", req.file);
-    console.log("body", req.body);
+    // console.log("file", req.file);
+    // console.log("body", req.body);
     const userKeyData = await prisma.UserKeys.findUnique({
       where: {
         userId: parseInt(req.body.ownerId),
@@ -16,8 +16,8 @@ const uploadDocument = async (req, res) => {
     });
     const key = randomBytes(32); // AES KEY this is
     const iv = randomBytes(16);
-    console.log("key", key.toString("hex"));
-    console.log("iv", iv.toString("hex"));
+    // console.log("key", key.toString("hex"));
+    // console.log("iv", iv.toString("hex"));
     // const publicKey = Buffer.from(userKeyData.publicKey, "base64");
     const publicKey = userKeyData.publicKey;
     const encryptedAESKey = publicEncrypt(publicKey, key).toString("hex");
@@ -63,8 +63,6 @@ const uploadDocument = async (req, res) => {
 };
 const getDocuments = async (req, res) => {
   try {
-    console.log(req.query);
-
     const allDocs = await prisma.file.findMany({
       where: {
         ownerId: parseInt(req.query.userId),
@@ -363,17 +361,42 @@ const getSharedDocuments = async (req, res) => {
     const { userId } = req.query;
     const accessListData = await prisma.accessList.findMany({
       where: { userId: parseInt(userId) },
-      select: { fileId: true },
+      select: { fileId: true, sharedDateTime: true },
     });
+
     const fileIds = accessListData.map((item) => item.fileId);
+    const sharedDateTimes = accessListData.reduce((acc, item) => {
+      acc[item.fileId] = item.sharedDateTime;
+      return acc;
+    }, {});
+
     const fileData = await prisma.file.findMany({
       where: { id: { in: fileIds }, ownerId: { not: parseInt(userId) } },
+      include: {
+        owner: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+      },
     });
+
+    const responseData = fileData.map((file) => ({
+      id: file.id,
+      mongoId: file.mongoId,
+      name: file.name,
+      size: file.size,
+      initializationVector: file.initializationVector,
+      sharedDateTime: sharedDateTimes[file.id],
+      senderName: file.owner.name,
+      senderEmail: file.owner.email,
+    }));
 
     return res.status(200).json({
       message: "success",
       status: 200,
-      data: fileData,
+      data: responseData,
     });
   } catch (error) {
     return res.status(500).json({
@@ -382,6 +405,77 @@ const getSharedDocuments = async (req, res) => {
     });
   }
 };
+
+const searchDocument = async (req, res) => {
+  try {
+    const { searchText } = req.query;
+    const userId = parseInt(req.query.userId);
+    // grab the users khudke documents
+    const uploadedDocument = await prisma.file.findMany({
+      where: {
+        ownerId: userId,
+        name: {
+          contains: searchText,
+          mode: "insensitive",
+        },
+      },
+      include: {
+        owner: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+    //now we grab the shared documents
+
+    const sharedDocumentsData = await prisma.accessList.findMany({
+      where: {
+        userId: userId,
+        file: {
+          name: {
+            contains: searchText,
+            mode: "insensitive",
+          },
+        },
+      },
+      include: {
+        file: {
+          include: {
+            owner: {
+              select: {
+                name: true,
+                email: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const sharedDocuments = sharedDocumentsData.map((item) => ({
+      ...item.file,
+      sharedDateTime: item.sharedDateTime,
+    }));
+
+    const allDocuments = [...uploadedDocument, ...sharedDocuments];
+    const result = allDocuments.map((item) => {
+      const { owner, ...restData } = item;
+      return { ...restData, senderName: owner.name, senderEmail: owner.email };
+    });
+    return res.status(200).json({
+      message: "success",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: error,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   uploadDocument,
   getDocuments,
@@ -392,4 +486,5 @@ module.exports = {
   roverUserAccess,
   removeAllUserAccess,
   getSharedDocuments,
+  searchDocument,
 };

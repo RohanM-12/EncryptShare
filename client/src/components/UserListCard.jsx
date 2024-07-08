@@ -1,4 +1,4 @@
-import { Avatar, Button } from "antd";
+import { Avatar } from "antd";
 import React from "react";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -33,15 +33,13 @@ const UserListCard = ({
   return (
     <>
       <div className="flex justify-center">
-        <div className="flex items-center border-2 drop-shadow-2xl border-gray-300 my-0.5 rounded-xl hover:border-gray-400 w-80 md:w-2/3">
-          <Avatar className="float-start p-5 bg-gradient-to-br from-blue-400 to-teal-200 text-xl m-2 border-2 border-white drop-shadow-2xl">
+        <div className="flex items-center border-2 drop-shadow-2xl border-gray-300 my-1 rounded-xl hover:border-gray-400 w-80 ">
+          <Avatar className="float-start p-5 bg-gradient-to-br from-indigo-600 to-purple-400 text-xl m-2 border-2 border-white drop-shadow-sm">
             {userData?.name[0]?.toUpperCase()}
           </Avatar>
           <div className="flex-grow">
             <div className="mx-2 text-black">{userData?.name}</div>
-            <div className="mx-2 text-gray-500 w-fit">
-              Email: {userData?.email}
-            </div>
+            <div className="mx-2 text-gray-500 w-fit">{userData?.email}</div>
           </div>
           <PlusCircleOutlined
             onClick={() => {

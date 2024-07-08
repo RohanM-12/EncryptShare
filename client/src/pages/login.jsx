@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useAuth } from "../context/authcontext";
 
 const Login = () => {
+  //Cockroach Db with corp account used for postgres  3ZRMh8szU5Jf__DSHJBmQA
   const [auth, setAuth] = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();

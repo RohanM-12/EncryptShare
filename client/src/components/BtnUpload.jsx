@@ -1,6 +1,5 @@
-import { FloatButton } from "antd";
+import { FloatButton, Image } from "antd";
 import React from "react";
-import { CloudUploadOutlined } from "@ant-design/icons";
 
 // eslint-disable-next-line react/prop-types
 const BtnUpload = ({ onClick }) => {
@@ -8,7 +7,14 @@ const BtnUpload = ({ onClick }) => {
     <FloatButton
       className="drop-shadow-2xl hover:scale-105 ease-out duration-100 "
       icon={
-        <CloudUploadOutlined className=" shadow-sm  text-white rounded-2xl p-0.5 " />
+        // <CloudUploadOutlined className=" shadow-sm  text-white rounded-2xl p-0.5 " />
+        <Image
+          width={28}
+          preview={false}
+          draggable="false"
+          className="p-0 -ml-1"
+          src="src/assets/img/logo.png"
+        />
       }
       type=""
       style={{

@@ -1,9 +1,7 @@
-/* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import { FaCloudDownloadAlt } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
-import { FaShareNodes } from "react-icons/fa6";
-import { Image, Popconfirm } from "antd";
+import { Avatar, Image, Popconfirm, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -11,30 +9,31 @@ import { useAuth } from "../context/authcontext";
 import { filesize } from "filesize";
 import ShareDrawer from "./ShareDrawer";
 import SpinnerCircle from "./SpinnerCircle";
+import dayjs from "dayjs";
+import { FaShareNodes } from "react-icons/fa6";
+
 const DocumentCard = ({ docData, fetchData, shared }) => {
   const docTypes = ["txt", "pdf", "pptx", "docx", "xlsx"];
   const [auth] = useAuth();
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
   const getImageSrc = () => {
     const extension = docData?.name?.split(".")[1];
-
-    const imgPath = docTypes.find((item) => item === extension)
+    return docTypes.includes(extension)
       ? `/src/assets/img/${extension}.png`
       : `/src/assets/img/default.png`;
-    return imgPath;
   };
 
   const handleDocumentDelete = async () => {
     try {
-      const data = await axios.delete("/api/v1/document/deleteDocument", {
+      const { status } = await axios.delete("/api/v1/document/deleteDocument", {
         params: { id: docData?.id, mongoId: docData?.mongoId },
       });
-
-      if (data?.status == 200) {
+      if (status === 200) {
         toast.warn("File deleted successfully");
+        fetchData();
       }
-      fetchData();
     } catch (error) {
       console.log(error.message);
     }
@@ -51,90 +50,98 @@ const DocumentCard = ({ docData, fetchData, shared }) => {
         },
         responseType: "blob",
       });
-      let filename = docData?.name;
-
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", filename);
+      link.setAttribute("download", docData?.name);
       document.body.appendChild(link);
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-
-      setLoading(false);
     } catch (error) {
       console.error("Download error:", error);
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="h-auto w-fit transition-all duration-300 hover:drop-shadow-2xl hover:bg-white  bg-gray-50 border-gray-300 rounded-lg p-1 drop-shadow-xl  shadow-sm ">
-      <div className="w-64 flex justify-center items-center">
-        <Image
-          preview={false}
-          height={100}
-          src={getImageSrc()}
-          alt="img"
-          className="hover:scale-110 ease-out duration-200 "
-        />
-      </div>
-      <div className="my-2 text-center text-gray-600">
-        {docData?.name?.split(".")[0].length > 18
-          ? docData?.name?.split(".")[0].substr(0, 17) +
-            "..." +
-            docData?.name?.split(".")[1]
-          : docData?.name}
-      </div>
-      <div className="text-center text-sm text-gray-500 font-normal">
-        {filesize(docData.size)}
-      </div>
-      <div className=" border-b-2 my-1 border-gray-300"></div>
-      {shared == 1 ? (
-        <div className="grid grid-cols-3 justify-center items-center  ">
-          <Link
-            onClick={downloadDocument}
-            className="flex justify-center text-green-500 hover:text-green-700 "
+    <div className="w-64 bg-stone-50 hover:bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+      <div className="p-3 relative">
+        <p className="text-xs drop-shadow-sm text-gray-500 absolute top-2 left-2">
+          {dayjs(docData?.sharedDateTime).format("MMM D, YYYY • h:mm A")}
+        </p>
+        {shared === 0 && (
+          <Tooltip
+            title={
+              <div>
+                <p className="font-semibold">
+                  Shared by : {docData?.senderName}
+                </p>
+                <p>{docData?.senderEmail}</p>
+              </div>
+            }
           >
-            {loading ? (
-              <SpinnerCircle tip={"Downloading"} color={"#7ae582"} />
-            ) : (
-              <FaCloudDownloadAlt size={30} />
-            )}
-          </Link>
-          <Popconfirm
-            title="Delete document"
-            description="Are you sure to delete the file?"
-            okText="Yes"
-            cancelText="No"
-            onConfirm={handleDocumentDelete}
-          >
-            <Link className="flex justify-center text-red-500 hover:text-red-800">
-              <MdDeleteForever size={30} />
+            <Avatar
+              size={35}
+              className="drop-shadow-md border-2 border-white absolute top-2 right-2 bg-gradient-to-r from-blue-400 to-indigo-500 text-white cursor-pointer"
+            >
+              {docData?.senderName[0]}
+            </Avatar>
+          </Tooltip>
+        )}
+
+        <div className="mt-8 flex justify-center items-center drop-shadow-lg">
+          <Image
+            preview={false}
+            width={80}
+            src={getImageSrc()}
+            alt="Document type"
+            className="object-contain hover:scale-125 transition-transform duration-300"
+          />
+        </div>
+
+        <h3 className="mt-3 text-center font-semibold text-gray-800 truncate">
+          {docData?.name}
+        </h3>
+        <p className="text-sm text-center text-gray-500 mt-1">
+          {filesize(docData.size)}
+        </p>
+      </div>
+
+      <div className="border-t border-gray-200 p-1.5 flex justify-around">
+        <Link
+          onClick={downloadDocument}
+          className="text-green-500 hover:text-green-700"
+        >
+          {loading ? (
+            <SpinnerCircle tip="Downloading" color="#7ae582" />
+          ) : (
+            <FaCloudDownloadAlt size={30} />
+          )}
+        </Link>
+        {shared === 1 && (
+          <>
+            <Link
+              onClick={() => setIsOpen(true)}
+              className="text-blue-500 hover:text-blue-700"
+            >
+              <FaShareNodes size={27} />
             </Link>
-          </Popconfirm>
-          <Link
-            onClick={() => setIsOpen(true)}
-            className="flex justify-center text-blue-500 hover:text-blue-800"
-          >
-            <FaShareNodes size={25} />
-          </Link>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 justify-center items-center  ">
-          <Link
-            onClick={downloadDocument}
-            className="flex justify-center text-green-500 hover:text-green-700 "
-          >
-            {loading ? (
-              <SpinnerCircle tip={"Downloading"} color={"#7ae582"} />
-            ) : (
-              <FaCloudDownloadAlt size={30} />
-            )}
-          </Link>{" "}
-        </div>
-      )}
+            <Popconfirm
+              title="Delete document"
+              description="Are you sure to delete the file?"
+              okText="Yes"
+              cancelText="No"
+              onConfirm={handleDocumentDelete}
+            >
+              <Link className="text-red-500 hover:text-red-700">
+                <MdDeleteForever size={30} />
+              </Link>
+            </Popconfirm>
+          </>
+        )}
+      </div>
       <ShareDrawer open={isOpen} setIsOpen={setIsOpen} docData={docData} />
     </div>
   );

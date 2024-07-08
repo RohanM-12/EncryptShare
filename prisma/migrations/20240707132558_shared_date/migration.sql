@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "AccessList" ADD COLUMN     "sharedDateTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
