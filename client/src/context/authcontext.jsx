@@ -17,11 +17,10 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    // Set Authorization header in axios whenever auth.token changes
-    axios.defaults.headers.common["Authorization"] = auth.token
-      ? `Bearer ${auth.token}`
+    axios.defaults.headers.common["Authorization"] = auth?.token
+      ? `Bearer ${auth?.token}`
       : null;
-  }, [auth.token]);
+  }, [auth?.token]);
 
   return (
     <AuthContext.Provider value={[auth, setAuth]}>

@@ -162,7 +162,7 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
               <>
                 <div className="flex justify-center">
                   <Popconfirm
-                    title="Clear user access"
+                    title="Clear user access list"
                     description="Are you sure to revoke all access for this file?"
                     okText="Yes"
                     cancelText="No"

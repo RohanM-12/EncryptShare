@@ -4,9 +4,12 @@ import { TbLogout } from "react-icons/tb";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authcontext";
 import { CaretDownOutlined } from "@ant-design/icons";
+import { HiDocumentSearch } from "react-icons/hi";
+import { useSearch } from "../context/searchContext";
 const Header = () => {
   const navigate = useNavigate();
   const [auth, setAuth] = useAuth();
+  const [searchText, setSearchText] = useSearch();
   const handleLogOut = () => {
     localStorage.removeItem("user");
     setAuth({ user: null, token: "" });
@@ -36,7 +39,14 @@ const Header = () => {
               <Input
                 className="w-3/2 lg:w-1/2 md:2/3 h-12 drop-shadow-md text-center border-2 bg-white border-gray-400"
                 size="large"
-                placeholder="🔍 Search Document"
+                placeholder="Search Document"
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  setSearchText(e.target.value);
+                }}
+                suffix={
+                  <HiDocumentSearch size={30} className="text-slate-300" />
+                }
               />
             </div>
             <div className="flex justify-end col-span-1 ">

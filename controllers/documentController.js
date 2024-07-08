@@ -61,19 +61,47 @@ const uploadDocument = async (req, res) => {
     });
   }
 };
+
 const getDocuments = async (req, res) => {
   try {
+    const userId = parseInt(req.query.userId);
+    const searchText = req.query.searchText;
+
+    let whereClause = {
+      ownerId: userId,
+    };
+
+    if (searchText) {
+      whereClause.name = {
+        contains: searchText,
+        mode: "insensitive",
+      };
+    }
+
     const allDocs = await prisma.file.findMany({
-      where: {
-        ownerId: parseInt(req.query.userId),
+      where: whereClause,
+      include: {
+        owner: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
       },
     });
 
-    //delete allDocs.initializationVector;
+    const result = allDocs.map((item) => {
+      const { owner, ...restFile } = item;
+      return {
+        ...restFile,
+        senderName: owner.name,
+        senderEmail: owner.email,
+      };
+    });
 
     return res.status(200).json({
       message: "success",
-      data: allDocs,
+      data: result,
     });
   } catch (error) {
     return res.status(500).json({
@@ -358,39 +386,48 @@ const removeAllUserAccess = async (req, res) => {
 };
 const getSharedDocuments = async (req, res) => {
   try {
-    const { userId } = req.query;
+    const userId = parseInt(req.query.userId);
+    const searchText = req.query.searchText;
+
+    let whereClause = {
+      userId: userId,
+      file: {
+        ownerId: { not: userId },
+      },
+    };
+
+    if (searchText) {
+      whereClause.file.name = {
+        contains: searchText,
+        mode: "insensitive",
+      };
+    }
+
     const accessListData = await prisma.accessList.findMany({
-      where: { userId: parseInt(userId) },
-      select: { fileId: true, sharedDateTime: true },
-    });
-
-    const fileIds = accessListData.map((item) => item.fileId);
-    const sharedDateTimes = accessListData.reduce((acc, item) => {
-      acc[item.fileId] = item.sharedDateTime;
-      return acc;
-    }, {});
-
-    const fileData = await prisma.file.findMany({
-      where: { id: { in: fileIds }, ownerId: { not: parseInt(userId) } },
+      where: whereClause,
       include: {
-        owner: {
-          select: {
-            name: true,
-            email: true,
+        file: {
+          include: {
+            owner: {
+              select: {
+                name: true,
+                email: true,
+              },
+            },
           },
         },
       },
     });
 
-    const responseData = fileData.map((file) => ({
-      id: file.id,
-      mongoId: file.mongoId,
-      name: file.name,
-      size: file.size,
-      initializationVector: file.initializationVector,
-      sharedDateTime: sharedDateTimes[file.id],
-      senderName: file.owner.name,
-      senderEmail: file.owner.email,
+    const responseData = accessListData.map((item) => ({
+      id: item.file.id,
+      mongoId: item.file.mongoId,
+      name: item.file.name,
+      size: item.file.size,
+      initializationVector: item.file.initializationVector,
+      sharedDateTime: item.sharedDateTime,
+      senderName: item.file.owner.name,
+      senderEmail: item.file.owner.email,
     }));
 
     return res.status(200).json({
@@ -408,66 +445,88 @@ const getSharedDocuments = async (req, res) => {
 
 const searchDocument = async (req, res) => {
   try {
-    const { searchText } = req.query;
+    const { searchText, shared } = req.query;
+    console.log(req.query);
     const userId = parseInt(req.query.userId);
     // grab the users khudke documents
-    const uploadedDocument = await prisma.file.findMany({
-      where: {
-        ownerId: userId,
-        name: {
-          contains: searchText,
-          mode: "insensitive",
-        },
-      },
-      include: {
-        owner: {
-          select: {
-            name: true,
-            email: true,
+    if (shared == "true") {
+      const sharedDocumentsData = await prisma.accessList.findMany({
+        where: {
+          userId: userId,
+          file: {
+            name: {
+              contains: searchText,
+              mode: "insensitive",
+            },
           },
         },
-      },
-    });
-    //now we grab the shared documents
-
-    const sharedDocumentsData = await prisma.accessList.findMany({
-      where: {
-        userId: userId,
-        file: {
+        include: {
+          file: {
+            include: {
+              owner: {
+                select: {
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      const sharedDocuments = sharedDocumentsData.map((item) => {
+        const { ...restData } = item;
+        const { owner, ...restFile } = item.file;
+        return {
+          ...restFile,
+          senderName: owner.name,
+          senderEmail: owner.email,
+          sharedDateTime: item.sharedDateTime,
+        };
+      });
+      return res.status(200).json({
+        message: "success",
+        data: sharedDocuments,
+      });
+    } else {
+      const uploadedDocument = await prisma.file.findMany({
+        where: {
+          ownerId: userId,
           name: {
             contains: searchText,
             mode: "insensitive",
           },
         },
-      },
-      include: {
-        file: {
-          include: {
-            owner: {
-              select: {
-                name: true,
-                email: true,
-              },
+        include: {
+          owner: {
+            select: {
+              name: true,
+              email: true,
             },
           },
         },
-      },
-    });
+      });
 
-    const sharedDocuments = sharedDocumentsData.map((item) => ({
-      ...item.file,
-      sharedDateTime: item.sharedDateTime,
-    }));
+      const result = uploadedDocument.map((item) => {
+        const { owner, ...restFile } = item;
+        return {
+          ...restFile,
+          senderName: owner.name,
+          senderEmail: owner.email,
+        };
+      });
+      return res.status(200).json({
+        message: "success",
+        data: result,
+      });
+    }
 
-    const allDocuments = [...uploadedDocument, ...sharedDocuments];
-    const result = allDocuments.map((item) => {
-      const { owner, ...restData } = item;
-      return { ...restData, senderName: owner.name, senderEmail: owner.email };
-    });
-    return res.status(200).json({
-      message: "success",
-      data: result,
-    });
+    //now we grab the shared documents
+
+    // const allDocuments = [...uploadedDocument, ...sharedDocuments];
+    // const result = allDocuments.map((item) => {
+    //   const { owner, ...restData } = item;
+    //   return { ...restData, senderName: owner.name, senderEmail: owner.email };
+    // });
   } catch (error) {
     return res.status(500).json({
       error: error,

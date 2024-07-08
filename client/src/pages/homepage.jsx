@@ -4,6 +4,7 @@ import MyDocuments from "./MyDocuments";
 import SharedDocuments from "./SharedDocuments";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { TbLockShare } from "react-icons/tb";
+import { SearchProvider } from "../context/searchContext";
 
 const { TabPane } = Tabs;
 
