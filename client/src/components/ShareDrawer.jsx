@@ -108,20 +108,20 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
         height={520}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 ">
-          <div className="px-2   ">
-            <div className="flex justify-center text-gray-600 items-center text-center text-lg font-semibold ">
-              List of Users
+          <div className="px-2">
+            <div className="flex justify-center text-gray-600 items-center text-center text-md md:text-lg font-semibold ">
+              List of users
               <HiMiniUsers size={25} className="mx-2 text-blue-500" />
             </div>
-            <div className="flex justify-center my-0.5">
+            <div className="flex justify-center ">
               <Input
                 placeholder="Search User with Email/User name"
-                className="w-3/2 md:w-1/2 text-center border-2 border-gray-400"
-                size="large"
+                className=" my-1 w-3/2 md:w-1/2 text-center border-2 border-gray-400"
+                size="middle"
                 onChange={handleSearch}
               />
             </div>
-            <div className="grid grid-cols-1 px-5 py-1">
+            <div className="grid grid-cols-1 px-5 py-0">
               {!loading &&
                 users?.length > 0 &&
                 users?.map((userData) => (
@@ -147,9 +147,9 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
           </div>
 
           <div className="px-5">
-            <div className="flex justify-center text-lg font-semibold">
+            <div className="flex justify-center items-center font-semibold">
               <div className="flex justify-center items-center mb-2">
-                <span className="text-center text-gray-600 drop-shadow-xl mt-5  lg:mt-0 md:mt-0">
+                <span className="text-center text-gray-600 drop-shadow-xl mt-2 text-md md:text-lg  lg:mt-0 md:mt-0">
                   Add user to give access to the file{" "}
                 </span>
                 <span>

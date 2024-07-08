@@ -7,6 +7,7 @@ import { useAuth } from "../context/authcontext";
 import DocCardSkeleton from "../components/DocCardSkeleton";
 import { useSearch } from "../context/searchContext";
 import { useDebounce } from "../context/useDebounce";
+import { Image } from "antd";
 
 const MyDocuments = () => {
   const [loading, setLoading] = useState(false);
@@ -65,6 +66,21 @@ const MyDocuments = () => {
               </div>
             ))}
       </div>
+      {documents?.length === 0 && loading === false && (
+        <>
+          <div className="text-center font-mono text-lg text-gray-400">
+            📁 NO DATA
+          </div>
+          <div className="flex justify-center">
+            <Image
+              draggable={false}
+              width={500}
+              preview={false}
+              src="/src/assets/img/process.gif"
+            />
+          </div>
+        </>
+      )}
 
       <BtnUpload onClick={handleUploadClick} />
       <UploadDocumentModal

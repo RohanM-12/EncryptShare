@@ -53,15 +53,20 @@ const SharedDocuments = () => {
             ))}
       </div>
 
-      {sharedDocuments?.length === 0 && (
-        <div className="flex justify-center">
-          <Image
-            draggable={false}
-            width={500}
-            preview={false}
-            src="/src/assets/img/process.gif"
-          />
-        </div>
+      {sharedDocuments?.length === 0 && loading === false && (
+        <>
+          <div className="text-center font-mono text-lg text-gray-400">
+            📁 NO DATA
+          </div>
+          <div className="flex justify-center">
+            <Image
+              draggable={false}
+              width={500}
+              preview={false}
+              src="/src/assets/img/process.gif"
+            />
+          </div>
+        </>
       )}
     </>
   );

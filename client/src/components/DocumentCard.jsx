@@ -68,7 +68,13 @@ const DocumentCard = ({ docData, fetchData, shared }) => {
   return (
     <div className="w-64 bg-stone-50 hover:bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
       <div className="p-3 relative">
-        <p className="text-xs drop-shadow-sm text-gray-500 absolute top-2 left-2">
+        <p
+          className={`text-xs drop-shadow-sm text-gray-500 ${
+            shared === 1
+              ? "absolute top-2 left-1/2 transform -translate-x-1/2"
+              : "absolute top-2 left-2"
+          }`}
+        >
           {dayjs(docData?.sharedDateTime).format("MMM D, YYYY • h:mm A")}
         </p>
         {shared === 0 && (

@@ -33,7 +33,7 @@ const UserAccessCard = ({ user, selectedUsers, setSelectedUsers, docData }) => {
         className="absolute -top-1 -right-1 text-gray-400 hover:text-red-600 transition duration-200"
         aria-label="Remove user"
       >
-        {auth?.user.id != user?.id && <IoMdCloseCircle size={24} />}
+        {auth?.user?.id != user?.id && <IoMdCloseCircle size={24} />}
       </button>
 
       <div className="flex flex-col items-center">
@@ -51,7 +51,7 @@ const UserAccessCard = ({ user, selectedUsers, setSelectedUsers, docData }) => {
           color="#c0c0c0"
         >
           <div className="relative mt-1">
-            <Avatar className="w-10 h-10 text-xl font-semibold bg-gradient-to-br from-indigo-600 to-purple-400 text-white border-2 border-white shadow-md hover:cursor-pointer">
+            <Avatar className="w-10 h-10 text-xl font-semibold bg-gradient-to-tr from-indigo-600 to-purple-400 text-white border-2 border-white shadow-md hover:cursor-pointer">
               {user?.name[0]?.toUpperCase()}
             </Avatar>
           </div>
@@ -60,10 +60,6 @@ const UserAccessCard = ({ user, selectedUsers, setSelectedUsers, docData }) => {
         <h3 className="text-md font-medium text-gray-900 truncate max-w-[calc(100%-2rem)]">
           {user?.name}
         </h3>
-
-        {/* <p className=" text-sm text-gray-500 truncate max-w-[calc(100%-2rem)]">
-                      {user?.email}
-                    </p> */}
       </div>
     </div>
   );
