@@ -8,7 +8,6 @@ import Homepage from "./pages/homepage";
 import Header from "./pages/header";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import Socials from "./components/Socials";
-
 function App() {
   return (
     <>

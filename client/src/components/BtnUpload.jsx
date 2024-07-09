@@ -13,7 +13,7 @@ const BtnUpload = ({ onClick }) => {
           preview={false}
           draggable="false"
           className="p-0 -ml-1"
-          src="src/assets/img/logo.png"
+          src="/img/logo.png"
         />
       }
       type=""

@@ -32,7 +32,7 @@ const SignUp = () => {
               draggable="false"
               preview={false}
               width={400}
-              src="/src/assets/img/process.gif"
+              src="/img/process.gif"
             />
           </div>
           <div className="col-span-1 p-3">

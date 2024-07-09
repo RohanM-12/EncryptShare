@@ -21,8 +21,8 @@ const DocumentCard = ({ docData, fetchData, shared }) => {
   const getImageSrc = () => {
     const extension = docData?.name?.split(".")[1];
     return docTypes.includes(extension)
-      ? `/src/assets/img/${extension}.png`
-      : `/src/assets/img/default.png`;
+      ? `/img/${extension}.png`
+      : `/img/default.png`;
   };
 
   const handleDocumentDelete = async () => {

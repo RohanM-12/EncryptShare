@@ -76,7 +76,7 @@ const MyDocuments = () => {
               draggable={false}
               width={500}
               preview={false}
-              src="/src/assets/img/process.gif"
+              src="/img/process.gif"
             />
           </div>
         </>

@@ -196,7 +196,7 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
                       width={300}
                       draggable={false}
                       preview={false}
-                      src="/src/assets/img/process.gif"
+                      src="/img/process.gif"
                     />
                   </div>
                 </div>

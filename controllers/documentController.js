@@ -157,6 +157,7 @@ function getMimeType(filename) {
   };
   return mimeTypes[extension] || "application/octet-stream";
 }
+
 const downloadDocument = async (req, res) => {
   try {
     const { mongoId, id, userId } = req.query;
@@ -193,7 +194,6 @@ const downloadDocument = async (req, res) => {
       encryptedPrivateKey,
       process.env.MASTER_KEY
     );
-    //  console.log("priv key dec", privateKey);
     const encryptedAESKey = Buffer.from(userAccess.encryptedKey, "hex");
     const aesKey = crypto.privateDecrypt(privateKey, encryptedAESKey);
 
@@ -203,13 +203,17 @@ const downloadDocument = async (req, res) => {
       throw new Error("Invalid IV length");
     }
 
-    const decryptedFilename = decrypt(
-      encryptedFileContent.content,
+    // Decrypt the file content
+    const encryptedBuffer = Buffer.from(encryptedFileContent.content, "base64");
+    const decipher = crypto.createDecipheriv(
+      process.env.ENC_METHOD,
       aesKey,
-      fileIV,
-      fileMetaData.name
+      fileIV
     );
-    const filePath = `../EncryptShare/decFiles/${decryptedFilename}`;
+    const decryptedData = Buffer.concat([
+      decipher.update(encryptedBuffer),
+      decipher.final(),
+    ]);
 
     res.setHeader(
       "Content-Disposition",
@@ -217,17 +221,8 @@ const downloadDocument = async (req, res) => {
     );
     res.setHeader("Content-Type", getMimeType(fileMetaData.name));
 
-    const fileStream = fs.createReadStream(filePath);
-    fileStream.pipe(res);
-
-    fileStream.on("close", () => {
-      // cleaninng the server file not needed now
-      fs.unlink(filePath, (unlinkErr) => {
-        if (unlinkErr) {
-          console.error("Unlink file error:", unlinkErr);
-        }
-      });
-    });
+    // Stream the decrypted content directly to the response
+    res.end(decryptedData);
   } catch (error) {
     return res.status(500).json({
       error: error,

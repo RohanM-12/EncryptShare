@@ -47,7 +47,7 @@ const loginUser = async (req, res) => {
 const signupUser = async (req, res) => {
   try {
     const { email, password, userName } = req.body;
-    const checkUser = await prisma.user.findUnique({
+    const checkUser = await prisma.User.findUnique({
       where: { email: email },
     });
     if (checkUser) {
@@ -59,10 +59,10 @@ const signupUser = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
-    const userData = await prisma.user.create({
+    const userData = await prisma.User.create({
       data: { name: userName, password: hashedPassword, email: email },
     });
-
+    console.log(userData);
     if (userData) {
       const { publicKey, privateKey } = await generateKeyPair();
       // console.log(privateKey, publicKey);

@@ -69,7 +69,7 @@ const Login = () => {
               draggable="false"
               preview={false}
               width={400}
-              src="/src/assets/img/loginScreenBG.gif"
+              src="/img/loginScreenBG.gif"
             />
           </div>
           <div className="col-span-1 p-3">

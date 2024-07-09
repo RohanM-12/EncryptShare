@@ -88,28 +88,28 @@ const UploadDocumentModal = ({ open, setOpen, fetchData }) => {
     }
     if (!newFile.type.startsWith("image/")) {
       if (newFile.type === "text/plain") {
-        newFile.thumbUrl = "/src/assets/img/txt.png";
+        newFile.thumbUrl = "/img/txt.png";
       } else if (newFile.type === "application/pdf") {
-        newFile.thumbUrl = "/src/assets/img/pdf.png";
+        newFile.thumbUrl = "/img/pdf.png";
       } else if (
         newFile.type === "application/msword" ||
         newFile.type ===
           "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
       ) {
-        newFile.thumbUrl = "/src/assets/img/docx.png";
+        newFile.thumbUrl = "/img/docx.png";
       } else if (
         newFile.type === "application/vnd.ms-powerpoint" ||
         newFile.type ===
           "application/vnd.openxmlformats-officedocument.presentationml.presentation"
       ) {
-        newFile.thumbUrl = "/src/assets/img/pptx.png";
+        newFile.thumbUrl = "/img/pptx.png";
       } else if (
         newFile.type ===
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       ) {
-        newFile.thumbUrl = "/src/assets/img/xlsx.png";
+        newFile.thumbUrl = "/img/xlsx.png";
       } else {
-        newFile.thumbUrl = "/src/assets/img/default.png";
+        newFile.thumbUrl = "/img/default.png";
       }
     }
     setFile(newFile);
