@@ -17,9 +17,9 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
   const [users, setUsers] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [userAccessList, setUserAccessList] = useState([]);
-  const [userCount, setUserCount] = useState(0);
   const searchTimeOutRef = useRef(null);
   const [auth] = useAuth();
+  const [userCount, setUserCount] = useState(0);
   const fetchData = async (params) => {
     try {
       setLoading(true);
@@ -115,6 +115,11 @@ const ShareDrawer = ({ open, setIsOpen, docData }) => {
               List of users
               <HiMiniUsers size={25} className="mx-2 text-blue-500" />
             </div>
+            {userCount > 0 && (
+              <div className="text-center text-xs text-gray-500">
+                Total Users : {userCount}
+              </div>
+            )}
             <div className="flex justify-center ">
               <Input
                 placeholder="Search User with Email/User name"

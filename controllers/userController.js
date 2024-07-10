@@ -118,6 +118,7 @@ const getAllUsers = async (req, res) => {
       message: "success",
       data: userList,
       userCount,
+      userCount,
     });
   } catch (error) {
     return res.status(500).json({
