@@ -13,7 +13,7 @@ https://drive.google.com/file/d/1pKrnmRxuWLPBKV7M082IlUBu14NH_oq1/view?usp=shari
 - **Activity Logs**: Detailed logs of user activities for better auditing and tracking.
 
 ## Screenshots
-![Thumbnail](https://github.com/RohanM-12/EncrpytShare-vercel/assets/98544765/645f21cb-cd98-4376-8def-8355760add97)
+![Thumbnail](https://github.com/RohanM-12/EncryptShare/assets/98544765/79ebde47-1958-4f06-84f0-934f069c797d)
 
 ![Screenshot 2024-07-10 152743](https://github.com/RohanM-12/EncrpytShare-vercel/assets/98544765/ef0cda12-bce3-467a-baaa-ce45b952dd38)
 
