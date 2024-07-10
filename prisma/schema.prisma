@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,44 +8,56 @@ datasource db {
 }
 
 model User {
-  id  Int @id @default(autoincrement())
-  name String 
-  email String @unique 
-  password String
-  userKeys UserKeys?
-  accessList AccessList[]
-  file File[]
+  id          Int             @id @default(autoincrement())
+  name        String
+  email       String          @unique
+  password    String
+  userKeys    UserKeys?
+  accessList  AccessList[]
+  file        File[]
+  accessLog   FileAccessLog[]
 }
 
 model UserKeys {
-  id Int @id @default(autoincrement())
-  userId Int @unique
-  publicKey String
-  privateKey String
-  iv String @default("")
-  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
+  id           Int    @id @default(autoincrement())
+  userId       Int    @unique
+  publicKey    String
+  privateKey   String
+  iv           String @default("")
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model File {
-  id Int @id @default(autoincrement()) 
-  mongoId String
-  name String
-  size String
-  ownerId Int
-  initializationVector String @default("none")
-  sharedDateTime DateTime @default(now())
-  accessList AccessList[]
-  owner User @relation(fields: [ownerId],references: [id],onDelete: Cascade)
+  id                   Int            @id @default(autoincrement())
+  mongoId              String
+  name                 String
+  size                 String
+  ownerId              Int
+  initializationVector String         @default("none")
+  sharedDateTime       DateTime       @default(now())
+  accessList           AccessList[]
+  owner                User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  accessLogs           FileAccessLog[]
 }
 
 model AccessList {
-  id Int @id @default(autoincrement())
-  fileId Int
-  userId Int 
-  encryptedKey String
+  id             Int    @id @default(autoincrement())
+  fileId         Int
+  userId         Int
+  encryptedKey   String
   sharedDateTime DateTime @default(now())
-  file File @relation(fields: [fileId],references: [id],onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-   @@unique([fileId, userId]) 
+  file           File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([fileId, userId])
 }
 
+model FileAccessLog {
+  id        Int      @id @default(autoincrement())
+  fileId    Int
+  userId    Int
+  action    String
+  timeStamp DateTime @default(now())
+  ipAddr    String
+  file      File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+}

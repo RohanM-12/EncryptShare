@@ -11,13 +11,14 @@ import ShareDrawer from "./ShareDrawer";
 import SpinnerCircle from "./SpinnerCircle";
 import dayjs from "dayjs";
 import { FaShareNodes } from "react-icons/fa6";
-
+import ActivityDrawer from "./ActivityDrawer";
+import { SlGraph } from "react-icons/sl";
 const DocumentCard = ({ docData, fetchData, shared }) => {
   const docTypes = ["txt", "pdf", "pptx", "docx", "xlsx"];
   const [auth] = useAuth();
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-
+  const [activityOpen, setActivityOpen] = useState(false);
   const getImageSrc = () => {
     const extension = docData?.name?.split(".")[1];
     return docTypes.includes(extension)
@@ -75,8 +76,23 @@ const DocumentCard = ({ docData, fetchData, shared }) => {
               : "absolute top-2 left-2"
           }`}
         >
-          {dayjs(docData?.sharedDateTime).format("MMM D, YYYY • h:mm A")}
+          {dayjs(docData?.sharedDateTime)?.format("MMM D, YYYY • h:mm A")}
         </p>
+        {shared === 1 && (
+          <Tooltip
+            autoAdjustOverflow
+            zIndex={0}
+            title="Acitivty"
+            className="hover:cursor-pointer"
+          >
+            <div
+              onClick={() => setActivityOpen(true)}
+              className="absolute top-1 right-3 text-white bg-blue-400 rounded-full p-0.5 border-2 border-white drop-shadow-md"
+            >
+              <SlGraph size={20} className="  " />
+            </div>
+          </Tooltip>
+        )}
         {shared === 0 && (
           <Tooltip
             title={
@@ -149,6 +165,11 @@ const DocumentCard = ({ docData, fetchData, shared }) => {
         )}
       </div>
       <ShareDrawer open={isOpen} setIsOpen={setIsOpen} docData={docData} />
+      <ActivityDrawer
+        activityOpen={activityOpen}
+        setActivityOpen={setActivityOpen}
+        fileId={docData?.id}
+      />
     </div>
   );
 };

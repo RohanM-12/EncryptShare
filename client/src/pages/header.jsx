@@ -45,7 +45,7 @@ const Header = () => {
                   setSearchText(e.target.value);
                 }}
                 suffix={
-                  <HiDocumentSearch size={30} className="text-slate-300" />
+                  <HiDocumentSearch size={30} className="text-gray-200" />
                 }
               />
             </div>

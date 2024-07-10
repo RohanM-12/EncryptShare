@@ -26,7 +26,7 @@ const UserAccessCard = ({ user, selectedUsers, setSelectedUsers, docData }) => {
   return (
     <div
       key={user?.id}
-      className=" ml-5 relative w-4/6 bg-white border border-gray-200 rounded-lg shadow-md p-0.1 transition duration-300 ease-in-out hover:shadow-lg"
+      className=" ml-5 relative w-52d bg-white border border-gray-200 rounded-lg shadow-md p-0.1 transition duration-300 ease-in-out hover:shadow-lg"
     >
       <button
         onClick={() => handleRemoveUser(user)}

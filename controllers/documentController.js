@@ -1,6 +1,7 @@
 const { randomBytes, createCipheriv, publicEncrypt } = require("crypto");
 const { encrypt, decrypt, decryptPrivateKey } = require("../utils/AESCipher");
 const fs = require("fs");
+const requestIp = require("request-ip");
 const crypto = require("crypto");
 const { prisma } = require("../utils/DBConnect");
 require("dotenv").config();
@@ -203,7 +204,6 @@ const downloadDocument = async (req, res) => {
       throw new Error("Invalid IV length");
     }
 
-    // Decrypt the file content
     const encryptedBuffer = Buffer.from(encryptedFileContent.content, "base64");
     const decipher = crypto.createDecipheriv(
       process.env.ENC_METHOD,
@@ -214,14 +214,22 @@ const downloadDocument = async (req, res) => {
       decipher.update(encryptedBuffer),
       decipher.final(),
     ]);
-
+    // creating a log for the download OPERATIon
+    const clientIP = requestIp.getClientIp(req).toString();
+    const logData = await prisma.FileAccessLog.create({
+      data: {
+        userId: parseInt(userId),
+        fileId: parseInt(id),
+        action: "Downloaded",
+        ipAddr: clientIP,
+      },
+    });
     res.setHeader(
       "Content-Disposition",
       `attachment; filename="${fileMetaData.name}"`
     );
     res.setHeader("Content-Type", getMimeType(fileMetaData.name));
 
-    // Stream the decrypted content directly to the response
     res.end(decryptedData);
   } catch (error) {
     return res.status(500).json({
@@ -290,6 +298,17 @@ const shareDocument = async (req, res) => {
         userId: parseInt(userData.id),
         fileId: parseInt(fileId),
         encryptedKey: sharedUserEncryptedAESKey.toString("hex"),
+      },
+    });
+
+    /// insert user access log for sharing
+    const clientIP = requestIp.getClientIp(req).toString();
+    const logData = await prisma.FileAccessLog.create({
+      data: {
+        userId: parseInt(ownerId),
+        fileId: parseInt(fileId),
+        action: "Shared",
+        ipAddr: clientIP,
       },
     });
 
