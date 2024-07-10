@@ -111,6 +111,8 @@ const UploadDocumentModal = ({ open, setOpen, fetchData }) => {
       } else {
         newFile.thumbUrl = "/img/default.png";
       }
+    } else {
+      newFile.thumbUrl = "/img/imageFile.png";
     }
     setFile(newFile);
 

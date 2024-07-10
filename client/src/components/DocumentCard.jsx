@@ -21,9 +21,18 @@ const DocumentCard = ({ docData, fetchData, shared }) => {
   const [activityOpen, setActivityOpen] = useState(false);
   const getImageSrc = () => {
     const extension = docData?.name?.split(".")[1];
-    return docTypes.includes(extension)
-      ? `/img/${extension}.png`
-      : `/img/default.png`;
+    if (docTypes.includes(extension)) {
+      return `/img/${extension}.png`;
+    } else if (
+      extension === "png" ||
+      extension === "jpeg" ||
+      extension === "jpg" ||
+      extension === "gif"
+    ) {
+      return `/img/imageFile.png`;
+    } else {
+      return `/img/default.png`;
+    }
   };
 
   const handleDocumentDelete = async () => {
@@ -72,7 +81,7 @@ const DocumentCard = ({ docData, fetchData, shared }) => {
         <p
           className={`text-xs drop-shadow-sm text-gray-500 ${
             shared === 1
-              ? "absolute top-2 left-1/2 transform -translate-x-1/2"
+              ? "absolute top-2 left-1/3 transform -translate-x-1/2"
               : "absolute top-2 left-2"
           }`}
         >
@@ -87,7 +96,7 @@ const DocumentCard = ({ docData, fetchData, shared }) => {
           >
             <div
               onClick={() => setActivityOpen(true)}
-              className="absolute top-1 right-3 text-white bg-blue-400 rounded-full p-0.5 border-2 border-white drop-shadow-md"
+              className="absolute top-1 right-1 text-white bg-blue-400 rounded-full p-0.5 border-2 border-white drop-shadow-md"
             >
               <SlGraph size={20} className="  " />
             </div>
