@@ -3,6 +3,8 @@
 ## Overview
 
 Welcome to the Secure Document Sharing Portal. This project is designed to provide a highly secure environment for uploading, sharing, and managing documents with end-to-end encryption. The portal ensures that all documents are encrypted on the client side before being uploaded to the server, where they are securely stored and managed.
+## Vercel Deployed URL 🔥
+https://encrpyt-share-vercel.vercel.app/login
 ## G-Drive 🎥 Demo Video : 
 https://drive.google.com/file/d/1pKrnmRxuWLPBKV7M082IlUBu14NH_oq1/view?usp=sharing 
 ## Features
