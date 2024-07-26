@@ -49,8 +49,8 @@ https://drive.google.com/file/d/1pKrnmRxuWLPBKV7M082IlUBu14NH_oq1/view?usp=shari
 3. **Set Up Environment Variables**
    Create a `.env` file in the root directory and add the following variables:
    ```
-   COSMOSDB_ENDPOINT=your-cosmosdb-endpoint
-   COSMOSDB_KEY=your-cosmosdb-key
+   MongoDB=your-mongo-endpoint
+   SQL=your-postgres-key
    ```
 
 4. **Run the Application**
